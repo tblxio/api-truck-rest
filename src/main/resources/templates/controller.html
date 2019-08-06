@@ -1,0 +1,363 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" name="viewport">
+
+    <style>
+        body {
+            overflow: hidden;
+            padding: 0;
+            margin: 0;
+            background-color: #fff;
+        }
+
+        #info {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            padding: 5px;
+            text-align: center;
+            display: block;
+        }
+
+        #info a {
+            color: #66F;
+            text-decoration: none;
+        }
+
+        #info a:hover {
+            text-decoration: underline;
+        }
+
+        #container {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            padding: 0;
+            margin: 0;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+        }
+
+        #logo {
+            position: absolute;
+            top: 60%;
+            left: 50%;
+            object-fit: cover;
+            text-align: center;
+            display: block;
+            transform: translate(-50%, -50%);
+        }
+
+        #gyro {
+            position: absolute;
+            top: 50px;
+            width: 100%;
+            padding: 5px;
+            text-align: center;
+            display: block;
+        }
+
+        #accel {
+            position: absolute;
+            top: 100px;
+            width: 100%;
+            padding: 5px;
+            text-align: center;
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+<div id="container"></div>
+<div id="info">
+    <br/> Touch the screen and move - works with mouse too as debug
+    <br/>
+    <br>
+    <span id="components"></span>
+    <br>
+    <br>
+    <span id="transformations"></span>
+    <br>
+    <br>
+    <span id="result"></span>
+    <br>
+    <br>
+    <span id="controller"></span>
+    <br>
+    <br>
+    <b>Gyroscope Streams:</b>
+    <br>
+    <span id="gyroscopesampling"></span>
+    <br>
+    <span id="gyroscopemax"></span>
+    <br>
+    <span id="gyroscopemin"></span>
+    <br>
+    <span id="gyroscopelast"></span>
+    <br>
+    <span id="gyroscopemean"></span>
+    <br>
+    <br>
+    <b>Accelerometer Streams:</b>
+    <br>
+    <span id="accelerometersampling"></span>
+    <br>
+    <span id="accelerometermax"></span>
+    <br>
+    <span id="accelerometermin"></span>
+    <br>
+    <span id="accelerometerlast"></span>
+    <br>
+    <span id="accelerometermean"></span>
+    <br>
+
+</div>
+
+<div align="center" id="logo">
+    <object data="/images/logodark.svg" height="100" th:src="@{/images/logodark.svg}" type="image/svg+xml" width="250">
+        Your browser does not support SVG
+    </object>
+</div>
+<script src="/virtualjoystick.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="/webjars/jquery/jquery.min.js"></script>
+<script src="/webjars/sockjs-client/sockjs.min.js"></script>
+<script src="/webjars/stomp-websocket/stomp.min.js"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var host_ip = /*[[${message}]]*/ '127.0.0.1:8080';
+    /*]]>*/
+</script>
+<script>
+    console.log("touchscreen is", VirtualJoystick.touchScreenAvailable() ? "available" : "not available");
+    var URL = "http://0.0.0.0:8080";
+    var maxStickValue = 200;
+
+    var joystick = new VirtualJoystick({
+        container: document.getElementById('container'),
+        mouseSupport: true,
+        limitStickTravel: true,
+        stickRadius: maxStickValue
+    });
+    var lastX = joystick.deltaX();
+    var lastY = joystick.deltaY();
+    joystick.addEventListener('touchStart', function () {
+        console.log('down')
+    });
+    joystick.addEventListener('touchEnd', function () {
+        console.log('up');
+        stop();
+    });
+    joystick.addEventListener('move', function () {
+        //drive();
+    });
+    console.log(host_ip);
+    setInterval(function () {
+        var outputEl = document.getElementById('result');
+        outputEl.innerHTML = '<b>Joystick Result:</b> '
+            + ' dx: ' + changeInterval(joystick.deltaX(), maxStickValue * -1, maxStickValue, -255, 255)
+            + ' dy: ' + changeInterval(joystick.deltaY(), maxStickValue * -1, maxStickValue, -255, 255)
+            + (joystick.right() ? ' right' : '')
+            + (joystick.up() ? ' up' : '')
+            + (joystick.left() ? ' left' : '')
+            + (joystick.down() ? ' down' : '')
+    }, 1 / 5 * 1000);
+
+    setInterval(drive, 1 * 1000);
+    setInterval(get_adc, 2 * 1000);
+    get_components();
+    get_transformations();
+    get_sampling('gyroscope');
+    get_sampling('accelerometer');
+    connectStream('gyroscope', 'last', 3000);
+    connectStream('gyroscope', 'mean', 5000);
+    connectStream('gyroscope', 'min', 10000);
+    connectStream('gyroscope', 'max', 2000);
+    connectStream('accelerometer', 'last', 1000);
+    connectStream('accelerometer', 'mean', 7000);
+    connectStream('accelerometer', 'min', 7500);
+    connectStream('accelerometer', 'max', 10000);
+    get_adc();
+
+    function drive() {
+        var endpoint = URL + "/motors/drive";
+        var data;
+        if (Math.abs(joystick.deltaX() - lastX) > 0) {
+            if (joystick.right() || joystick.left()) {
+                var power = joystick.deltaX();
+                power = (power > 0) ? power + 55 : power - 55;
+                console.log(parseInt(power));
+                data = {
+                    "motion": "angular",
+                    "power": parseInt(power)
+                };
+                $.post(endpoint, data, function (data, status) {
+                    console.log("[" + Date.now() + "]: angular");
+                });
+            }
+            lastX = joystick.deltaX();
+        }
+
+        if (Math.abs(joystick.deltaY() - lastY) > 0) {
+            if (joystick.up() || joystick.down()) {
+                var power = joystick.deltaY() * -1;
+                power = (power > 0) ? power + 55 : power - 55;
+
+                data = {
+                    "motion": "linear",
+                    "power": parseInt(power)
+                };
+                $.post(endpoint, data, function (data, status) {
+                    console.log("[" + Date.now() + "]: linear")
+                });
+            }
+            lastY = joystick.deltaY();
+        }
+
+    }
+
+    function stop() {
+        var endpoint = URL + "/motors/drive";
+        var data;
+        var power = 0;
+        data = {
+            "motion": "angular",
+            "power": parseInt(power)
+        };
+        $.post(endpoint, data, function (data, status) {
+            console.log('${data} and {status}')
+        });
+
+        var power = 0;
+        data = {
+            "motion": "linear",
+            "power": parseInt(power)
+        };
+        $.post(endpoint, data, function (data, status) {
+            console.log('${data} and {status}')
+        });
+    }
+
+    function get_adc() {
+        var endpoint = URL + "/events/last/motor";
+        var outputEl = document.getElementById('controller');
+        $.get(endpoint, function (data, status) {
+            try {
+                // var obj = JSON.parse(data);
+                outputEl.innerHTML = '<b>Controller State:</b> '
+                    + '  BatVoltage: ' + data.batVoltage.toFixed(5)
+                    + '  Temperature: ' + data.temperature.toFixed(5);
+            } catch (err) {
+                outputEl.innerHTML = '<b>Controller State:</b> ' + ' no data yet';
+            }
+
+            console.log(data)
+        });
+
+    }
+
+    function get_components() {
+        var endpoint = URL + "/components";
+        var outputEl = document.getElementById('components');
+        $.get(endpoint, function (data, status) {
+            try {
+                // var obj = JSON.parse(data);
+                outputEl.innerHTML = '<b>Components:</b> ';
+                data.forEach(function (value) {
+                    outputEl.innerHTML += ' ' + value;
+                })
+            } catch (err) {
+                outputEl.innerHTML = '<b>Controller State:</b> ' + ' no data yet';
+            }
+            console.log(data)
+        });
+    }
+
+    function get_transformations() {
+        var endpoint = URL + "/transformations";
+        var outputEl = document.getElementById('transformations');
+        $.get(endpoint, function (data, status) {
+            try {
+                // var obj = JSON.parse(data);
+                outputEl.innerHTML = '<b>Transformations:</b> ';
+                data.forEach(function (value) {
+                    outputEl.innerHTML += ' ' + value;
+                })
+            } catch (err) {
+                outputEl.innerHTML = '<b>Controller State:</b> ' + ' no data yet';
+            }
+            console.log(data)
+        });
+    }
+
+    function get_sampling(component) {
+        var endpoint = URL + "/components/" + component;
+        var outputEl = document.getElementById(component + "sampling");
+        $.get(endpoint, function (data, status) {
+            try {
+                // var obj = JSON.parse(data);
+                outputEl.innerHTML = '<b>Real Sampling Rate :</b> ' +
+                    data.samplingInterval + 'ms';
+            } catch (err) {
+                outputEl.innerHTML = '<b>Real Sampling Rate :</b> ' + 'no data yet';
+            }
+            console.log(data)
+        });
+    }
+
+
+    function connectStream(component, transformation, interval) {
+        var endpoint = URL + "/events/stream/" + interval + "/" + component + "/" + transformation;
+        var socket = new SockJS('/messages');
+        var mystompClient = Stomp.over(socket);
+        var topicWs;
+        var outputEl = document.getElementById(component + transformation);
+        $.get(endpoint, function (data, status) {
+            topicWs = data;
+            console.log(topicWs);
+            mystompClient.connect({}, function (frame) {
+                //setConnected(true);
+                mystompClient.subscribe(topicWs, function (data) {
+                    try {
+                        var obj = JSON.parse(data.body);
+                        outputEl.innerHTML = interval + '<b>ms:</b>   ' +
+                            transformation.toUpperCase() + ': '
+                            + '  <b>x:</b> ' + obj.x.toFixed(5)
+                            + '  <b>y:</b> ' + obj.y.toFixed(5)
+                            + '  <b>z:</b> ' + obj.z.toFixed(5)
+                            + '  <b>Ts</b>: ' + converTimestamp(obj.timestamp);
+                    } catch (err) {
+                        outputEl.innerHTML = '<b>Controller State:</b> ' + ' no data yet';
+                    }
+                });
+            });
+        });
+
+    }
+
+    function changeInterval(value, in_min, in_max, out_min, out_max) {
+        return (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+    }
+
+
+    function converTimestamp(timestamp) {
+        // Create a new JavaScript Date object based on the timestamp
+// multiplied by 1000 so that the argument is in milliseconds, not seconds.
+        var date = new Date(timestamp / 1000);
+// Hours part from the timestamp
+        var hours = date.getHours();
+// Minutes part from the timestamp
+        var minutes = "0" + date.getMinutes();
+// Seconds part from the timestamp
+        var seconds = "0" + date.getSeconds();
+
+// Will display time in 10:30:23 format
+        return hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+    }
+
+</script>
+</body>
+</html>
