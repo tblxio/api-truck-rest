@@ -328,7 +328,7 @@
                             + '  <b>x:</b> ' + obj.x.toFixed(5)
                             + '  <b>y:</b> ' + obj.y.toFixed(5)
                             + '  <b>z:</b> ' + obj.z.toFixed(5)
-                            + '  <b>Ts</b>: ' + converTimestamp(obj.timestamp);
+                            + '  <b>Ts</b>: ' + converTimestamp(obj.timestamp * 1000);
                     } catch (err) {
                         outputEl.innerHTML = '<b>Controller State:</b> ' + ' no data yet';
                     }

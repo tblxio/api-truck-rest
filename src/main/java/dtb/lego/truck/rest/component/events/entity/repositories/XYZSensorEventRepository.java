@@ -11,101 +11,112 @@ import java.util.Collection;
 public interface XYZSensorEventRepository<T extends XYZSensorEvent> extends EventRepository<T> {
 
     @Query(value = "SELECT MAX(timestamp) AS timestamp , MAX(name) as name,  AVG(x) AS x, AVG(y) AS y, AVG(z) AS z " +
-            "FROM #{#entityName} where timestamp between extract(epoch from now())*1e6 - :interval and extract(epoch from now())*1e6;",
+            "FROM #{#entityName} where timestamp between extract(epoch from now())*1e3 - :interval and extract(epoch from now())*1e3;",
             nativeQuery = true)
     T findEventMeaninLastTimeUnits(@Param("interval") long interval);
 
     @Query(value = "SELECT MAX(timestamp) AS timestamp , MAX(name) as name,  MAX(x) AS x, MAX(y) AS y, MAX(z) AS z " +
-            "FROM #{#entityName} where timestamp between extract(epoch from now())*1e6 - :interval and extract(epoch from now())*1e6;",
+            "FROM #{#entityName} where timestamp between extract(epoch from now())*1e3 - :interval and extract(epoch from now())*1e3;",
             nativeQuery = true)
     T findEventMaxinLastTimeUnits(@Param("interval") long interval);
 
     @Query(value = "SELECT MAX(timestamp) AS timestamp , MAX(name) as name,  MIN(x) AS x, MIN(y) AS y, MIN(z) AS z " +
-            "FROM #{#entityName} where timestamp between extract(epoch from now())*1e6 - :interval and extract(epoch from now())*1e6;",
+            "FROM #{#entityName} where timestamp between extract(epoch from now())*1e3 - :interval and extract(epoch from now())*1e3;",
             nativeQuery = true)
     T findEventMininLastTimeUnits(@Param("interval") long interval);
 
     /**
-     * Creates an auxiliary series to represent the requested interval between events, use a left join then group all the events
-     * contained in between the new interval and perform the requested operation to aggregate the events, in this case the mean.
+     * Uses the timescaleDB time_bucket function to create the intervals and applies the the transforms over them.
+     * The use of the WITH clause is just because the final name of the timestamp column needing to be Timestamp
+     * for the JPA to properly package the object
+     *
+     * For more information on the time_bucket: https://docs.timescale.com/latest/api#time_bucket
      */
-    @Query(value = "with RequestedTimeSeries as (select generate_series(:begin ,:end , :interval ) Serie) " +
-            "select RequestedTimeSeries.Serie as timestamp, " +
-            "MAX(name) as name,  AVG(x) AS x, AVG(y) AS y, AVG(z) AS z from RequestedTimeSeries " +
-            "left join #{#entityName} on #{#entityName}.timestamp >= RequestedTimeSeries.Serie " +
-            "and #{#entityName}.timestamp< RequestedTimeSeries.Serie + :interval " +
-            "group by RequestedTimeSeries.Serie " +
-            "order by RequestedTimeSeries.Serie;",
+    @Query(value = "WITH aggregation as" +
+            "(select time_bucket_gapfill(:interval ,timestamp, :begin, :end) as interval, MAX(name) AS name," +
+            "AVG(x) AS x, AVG(y) AS y, AVG(z) AS z " +
+            "from #{#entityName} " +
+            "where timestamp between :begin and :end group by interval " +
+            "order by interval desc)" +
+            "SELECT interval as timestamp, name, x,y,z from aggregation",
             nativeQuery = true)
     Collection<T> findAvgEventsInInterval(@Param("begin") long begin,
                                           @Param("end") long end,
                                           @Param("interval") long interval);
 
     /**
-     * Creates an auxiliary series to represent the requested interval between events, use a left join then group all the events
-     * contained in between the new interval and perform the requested operation to aggregate the events, in this case it finds
-     * the max.
+     * Uses the timescaleDB time_bucket function to create the intervals and applies the the transforms over them.
+     * The use of the WITH clause is just because the final name of the timestamp column needing to be Timestamp
+     * for the JPA to properly package the object
+     *
+     * For more information on the time_bucket: https://docs.timescale.com/latest/api#time_bucket
      */
-    @Query(value = "with RequestedTimeSeries as (select generate_series(:begin ,:end , :interval ) Serie) " +
-            "select RequestedTimeSeries.Serie as timestamp, " +
-            "MAX(name) as name,  MAX(x) AS x, max (y) AS y, MAX(z) AS z from RequestedTimeSeries " +
-            "left join #{#entityName} on #{#entityName}.timestamp >= RequestedTimeSeries.Serie " +
-            "and #{#entityName}.timestamp< RequestedTimeSeries.Serie + :interval " +
-            "group by RequestedTimeSeries.Serie " +
-            "order by RequestedTimeSeries.Serie;",
+    @Query(value = "WITH aggregation as" +
+            "(select time_bucket(:interval ,timestamp) as interval, MAX(name) AS name,max(x) AS x, max(y) AS y, max(z) AS z " +
+            "from #{#entityName} " +
+            "where timestamp between :begin and :end group by interval " +
+            "order by interval desc)" +
+            "SELECT interval as timestamp, name, x,y,z from aggregation",
             nativeQuery = true)
     Collection<T> findMaxEventsInInterval(@Param("begin") long begin,
                                           @Param("end") long end,
                                           @Param("interval") long interval);
 
     /**
-     * Creates an auxiliary series to represent the requested interval between events, use a left join then group all the events
-     * contained in between the new interval and perform the requested operation to aggregate the events, in this case it finds
-     * the min.
+     * Uses the timescaleDB time_bucket function to create the intervals and applies the the transforms over them.
+     * The use of the WITH clause is just because the final name of the timestamp column needing to be Timestamp
+     * for the JPA to properly package the object
+     *
+     * For more information on the time_bucket: https://docs.timescale.com/latest/api#time_bucket
      */
-    @Query(value = "with RequestedTimeSeries as (select generate_series(:begin ,:end , :interval ) Serie) " +
-            "select RequestedTimeSeries.Serie as timestamp, " +
-            "MAX(name) as name,  MIN(x) AS x, MIN(y) AS y, MIN(z) AS z from RequestedTimeSeries " +
-            "left join #{#entityName} on #{#entityName}.timestamp >= RequestedTimeSeries.Serie " +
-            "and #{#entityName}.timestamp< RequestedTimeSeries.Serie + :interval " +
-            "group by RequestedTimeSeries.Serie " +
-            "order by RequestedTimeSeries.Serie;",
+    @Query(value = "WITH aggregation as" +
+            "(select time_bucket(:interval ,timestamp) as interval, MAX(name) AS name,MIN(x) AS x, MIN(y) AS y, MIN(z) AS z " +
+            "from #{#entityName} " +
+            "where timestamp between :begin and :end group by interval " +
+            "order by interval desc)" +
+            "SELECT interval as timestamp, name, x,y,z from aggregation",
             nativeQuery = true)
     Collection<T> findMinEventsInInterval(@Param("begin") long begin,
                                           @Param("end") long end,
                                           @Param("interval") long interval);
-    /*
-    To use this function the following SQL function has to be defined in the DB
-    CREATE FUNCTION _final_median(anyarray) RETURNS float8 AS $$
-  WITH q AS
-  (
-     SELECT val
-     FROM unnest($1) val
-     WHERE VAL IS NOT NULL
-     ORDER BY 1
-  ),
-  cnt AS
-  (
-    SELECT COUNT(*) AS c FROM q
-  )
-  SELECT AVG(val)::float8
-  FROM
-  (
-    SELECT val FROM q
-    LIMIT  2 - MOD((SELECT c FROM cnt), 2)
-    OFFSET GREATEST(CEIL((SELECT c FROM cnt) / 2.0) - 1,0)
-  ) q2;
-$$ LANGUAGE SQL IMMUTABLE;
 
-CREATE AGGREGATE median(anyelement) (
-  SFUNC=array_append,
-  STYPE=anyarray,
-  FINALFUNC=_final_median,
-  INITCOND='{}'
-);
+    /**
+     * Uses the timescaleDB time_bucket function to create the intervals and applies the the transforms over them.
+     * The use of the WITH clause is just because the final name of the timestamp column needing to be Timestamp
+     * for the JPA to properly package the object
+     *
+     * For more information on the time_bucket: https://docs.timescale.com/latest/api#time_bucket
      */
-//    @Query(value = "SELECT MAX(timestamp) AS timestamp , MAX(name) as name,  median(x) AS x, median(y) AS y, median(z) AS z " +
-//            "FROM #{#entityName} where timestamp between extract(epoch from now())*1e6 - :interval and extract(epoch from now())*1e6;",
-//            nativeQuery = true)
-//    T findEventMedianinLastInterval(@Param("interval") long interval);
+    @Query(value = "WITH aggregation as" +
+            "(select time_bucket(:interval ,timestamp) as interval, MAX(name) AS name,last(x,timestamp) AS x,last(y,timestamp) AS y" +
+            ", last(z,timestamp) AS z " +
+            "from #{#entityName} " +
+            "where timestamp between :begin and :end group by interval " +
+            "order by interval desc)" +
+            "SELECT interval as timestamp, name, x,y,z from aggregation",
+            nativeQuery = true)
+    Collection<T> findLastEventsInInterval(@Param("begin") long begin,
+                                           @Param("end") long end,
+                                           @Param("interval") long interval);
+
+
+    /**
+     * Uses the timescaleDB time_bucket function to create the intervals and applies the the transforms over them.
+     * The use of the WITH clause is just because the final name of the timestamp column needing to be Timestamp
+     * for the JPA to properly package the object
+     * <p>
+     * For more information on the time_bucket: https://docs.timescale.com/latest/api#time_bucket
+     */
+    @Query(value = "WITH aggregation as" +
+            "(select time_bucket(:interval ,timestamp) as interval, MAX(name) AS name,first(x,timestamp) AS x,first(y,timestamp) AS y" +
+            ", first(z,timestamp) AS z " +
+            "from #{#entityName} " +
+            "where timestamp between :begin and :end group by interval " +
+            "order by interval desc)" +
+            "SELECT interval as timestamp, name, x,y,z from aggregation",
+            nativeQuery = true)
+    Collection<T> findFirstEventsInInterval(@Param("begin") long begin,
+                                            @Param("end") long end,
+                                            @Param("interval") long interval);
+
 }

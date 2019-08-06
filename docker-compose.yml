@@ -18,7 +18,7 @@ services:
       - "5555:5555"
 
   mypostgres:
-    image: postgres
+    image: timescale/timescaledb:latest-pg11
     ports:
       - "5432:5432"
     environment:

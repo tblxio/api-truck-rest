@@ -111,7 +111,6 @@ public class SensorDataHandler {
      * @param component The component requested (motor,gyroscope,etc..)
      */
     private Event meanEvent(long interval, Components component) {
-        interval = interval * 1000; //Transform into microsencods
         return databaseHandler.getXYZSensorMeanEventInLastInterval(interval, component);
     }
 
@@ -121,7 +120,6 @@ public class SensorDataHandler {
      * @param component The component requested (motor,gyroscope,etc..)
      */
     private Event maxEvent(long interval, Components component) {
-        interval = interval * 1000; //Transform into microsencods
         return databaseHandler.getXYZSensorMaxEventInLastInterval(interval, component);
     }
 
@@ -131,7 +129,6 @@ public class SensorDataHandler {
      * @param component The component requested (motor,gyroscope,etc..)
      */
     private Event minEvent(long interval, Components component) {
-        interval = interval * 1000; //Transform into microsencods
         return databaseHandler.getXYZSensorMinEventInLastInterval(interval, component);
     }
 
@@ -189,7 +186,6 @@ public class SensorDataHandler {
      */
     public Collection<? extends Event> getTransformedEventHistory(long sampleInterval, String comp, String transform, long begin,
                                                                   long end) throws IllegalArgumentException, LegoTruckException {
-        sampleInterval *= 1000; //Convert to microsseconds
         try {
             Components component = Components.valueOf(comp.toUpperCase());
 

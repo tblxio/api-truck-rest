@@ -32,8 +32,8 @@ public class EventHistoryResource {
     public ResponseEntity<Collection<? extends Event>> getComponentEventHistoryInInterval(@RequestParam String component,
                                                                                           @RequestParam(name = "from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime from,
                                                                                           @RequestParam(name = "to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime to) {
-        long begin = from.toInstant().toEpochMilli() * 1000; //Convert to microseconds
-        long end = to.toInstant().toEpochMilli() * 1000; //Convert to microseconds
+        long begin = from.toInstant().toEpochMilli();
+        long end = to.toInstant().toEpochMilli();
         inputValidator.checkValidComponent(component);
         inputValidator.checkThatBeginIsBeforeEnd(begin, end);
 
@@ -51,8 +51,8 @@ public class EventHistoryResource {
                                                                                                      @RequestParam(name = "to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime to,
                                                                                                      @RequestParam int sampling,
                                                                                                      @RequestParam String transformation) {
-        long begin = from.toInstant().toEpochMilli() * 1000; //Convert to microseconds
-        long end = to.toInstant().toEpochMilli() * 1000; //Convert to microseconds
+        long begin = from.toInstant().toEpochMilli();
+        long end = to.toInstant().toEpochMilli();
         inputValidator.checkValidComponent(component);
         inputValidator.checkThatBeginIsBeforeEnd(begin, end);
         inputValidator.checkBeginTransformedHistoryLessThan1MonthAgo(begin);
@@ -67,8 +67,8 @@ public class EventHistoryResource {
     public ResponseEntity<String> deleteEventHistoryFromComponent(@RequestParam String component,
                                                                   @RequestParam(name = "from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime from,
                                                                   @RequestParam(name = "to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime to) {
-        long begin = from.toInstant().toEpochMilli() * 1000; //Convert to microseconds
-        long end = to.toInstant().toEpochMilli() * 1000; //Convert to microseconds;
+        long begin = from.toInstant().toEpochMilli();
+        long end = to.toInstant().toEpochMilli();
         inputValidator.checkValidComponent(component);
         inputValidator.checkThatBeginIsBeforeEnd(begin, end);
 

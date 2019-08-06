@@ -99,11 +99,11 @@ public class MqttDataCallback implements MqttCallback {
             JSONObject accel = msg.getJSONObject("accel");
             JSONObject gyro = msg.getJSONObject("gyro");
             long timestamp = (long) msg.get("timestamp");
-            GyroscopeEvent gyroscopeEvent = new GyroscopeEvent(timestamp,
+            GyroscopeEvent gyroscopeEvent = new GyroscopeEvent(timestamp / 1000,
                     gyro.get("x"),
                     gyro.get("y"),
                     gyro.get("z"), "gyroscope");
-            AccelerometerEvent accelerometerEvent = new AccelerometerEvent(timestamp,
+            AccelerometerEvent accelerometerEvent = new AccelerometerEvent(timestamp / 1000,
                     accel.get("x"),
                     accel.get("y"),
                     accel.get("z"), "accelerometer");
@@ -126,7 +126,7 @@ public class MqttDataCallback implements MqttCallback {
         try {
             JSONObject msg = new JSONObject(message.toString());
             JSONObject resp_msg = msg.getJSONObject("resp_msg");
-            MotorControllerEvent incoming = new MotorControllerEvent(System.currentTimeMillis() * 1000, resp_msg.get("voltage"), resp_msg.get("temperature"), "motor");
+            MotorControllerEvent incoming = new MotorControllerEvent(System.currentTimeMillis(), resp_msg.get("voltage"), resp_msg.get("temperature"), "motor");
             motorControllerEvents.add(incoming);
             databaseHandler.saveMotorControllerEvent(incoming);
         } catch (Exception e) {

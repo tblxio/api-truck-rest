@@ -52,7 +52,7 @@ public class InputValidator {
     }
 
     public void checkBeginTransformedHistoryLessThan1MonthAgo(long begin) {
-        long oneMonthAgo = (System.currentTimeMillis() - 2678400000L) * 1000;
+        long oneMonthAgo = (System.currentTimeMillis() - 2678400000L);
         if (begin < oneMonthAgo)
             throw new LegoTruckException(Errors.INVALID_PARAMETER, "From needs to be later than two months ago");
     }
