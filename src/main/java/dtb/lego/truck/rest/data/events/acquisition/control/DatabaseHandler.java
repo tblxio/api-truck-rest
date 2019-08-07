@@ -66,27 +66,33 @@ public class DatabaseHandler {
         return motorControllerEventRepository.findEventsInInterval(begin, end);
     }
 
-    Collection<GyroscopeEvent> getGyroscopeMeanEventsInInterval(long begin, long end, long interval) {
+    Collection<GyroscopeEvent> getGyroscopeMeanEventsInInterval(long begin, long end, long interval, boolean fillGaps) {
+        if (fillGaps) return gyroscopeEventRepository.findAvgEventsInIntervalFillingGaps(begin, end, interval);
         return gyroscopeEventRepository.findAvgEventsInInterval(begin, end, interval);
     }
 
-    Collection<GyroscopeEvent> getGyroscopeMaxEventsInInterval(long begin, long end, long interval) {
+    Collection<GyroscopeEvent> getGyroscopeMaxEventsInInterval(long begin, long end, long interval, boolean fillGaps) {
+        if (fillGaps) return gyroscopeEventRepository.findMaxEventsInIntervalFillingGaps(begin, end, interval);
         return gyroscopeEventRepository.findMaxEventsInInterval(begin, end, interval);
     }
 
-    Collection<GyroscopeEvent> getGyroscopeMinEventsInInterval(long begin, long end, long interval) {
+    Collection<GyroscopeEvent> getGyroscopeMinEventsInInterval(long begin, long end, long interval, boolean fillGaps) {
+        if (fillGaps) return gyroscopeEventRepository.findMinEventsInIntervalFillingGaps(begin, end, interval);
         return gyroscopeEventRepository.findMinEventsInInterval(begin, end, interval);
     }
 
-    Collection<AccelerometerEvent> getAccelerometerMeanEventsInInterval(long begin, long end, long interval) {
+    Collection<AccelerometerEvent> getAccelerometerMeanEventsInInterval(long begin, long end, long interval, boolean fillGaps) {
+        if (fillGaps) return accelerometerEventRepository.findAvgEventsInIntervalFillingGaps(begin, end, interval);
         return accelerometerEventRepository.findAvgEventsInInterval(begin, end, interval);
     }
 
-    Collection<AccelerometerEvent> getAccelerometerMaxEventsInInterval(long begin, long end, long interval) {
+    Collection<AccelerometerEvent> getAccelerometerMaxEventsInInterval(long begin, long end, long interval, boolean fillGaps) {
+        if (fillGaps) return accelerometerEventRepository.findMaxEventsInIntervalFillingGaps(begin, end, interval);
         return accelerometerEventRepository.findMaxEventsInInterval(begin, end, interval);
     }
 
-    Collection<AccelerometerEvent> getAccelerometerMinEventsInInterval(long begin, long end, long interval) {
+    Collection<AccelerometerEvent> getAccelerometerMinEventsInInterval(long begin, long end, long interval, boolean fillGaps) {
+        if (fillGaps) return accelerometerEventRepository.findMinEventsInIntervalFillingGaps(begin, end, interval);
         return accelerometerEventRepository.findMinEventsInInterval(begin, end, interval);
     }
 

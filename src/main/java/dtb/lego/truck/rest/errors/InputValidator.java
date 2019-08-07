@@ -1,12 +1,18 @@
 package dtb.lego.truck.rest.errors;
 
+import dtb.lego.truck.rest.component.events.entity.ComponentInfoCollection;
 import dtb.lego.truck.rest.component.events.entity.Components;
 import dtb.lego.truck.rest.component.events.entity.Transformations;
 import dtb.lego.truck.rest.data.events.acquisition.entity.LegoTruckException;
+import org.hibernate.mapping.Component;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 @Controller
 public class InputValidator {
+    @Autowired
+    ComponentInfoCollection componentInfoCollection;
+
     public void checkValidComponent(String requestedComponent) {
         try {
             Components.valueOf(requestedComponent.toUpperCase());
@@ -29,9 +35,13 @@ public class InputValidator {
         }
     }
 
-    public void checkThatIntervalIsBiggerThanStorageInterval(long interval) {
-        if (interval <= 200) {
-            throw new LegoTruckException(Errors.INVALID_PARAMETER, "interval requested is smaller than acquisition interval");
+    public void checkThatIntervalIsBiggerThanStorageInterval(String fields, long interval) {
+        String[] components = fields.split("-");
+        for (String component : components) {
+            double componentInterval = componentInfoCollection.getComponentInfo(Components.valueOf(component.toUpperCase())).getSamplingInterval();
+            if (interval / 1000.0 < componentInterval) {
+                throw new LegoTruckException(Errors.INVALID_PARAMETER, "interval requested is smaller than acquisition interval");
+            }
         }
     }
 

@@ -50,7 +50,8 @@ public class EventHistoryResource {
                                                                                                      @RequestParam(name = "from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime from,
                                                                                                      @RequestParam(name = "to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime to,
                                                                                                      @RequestParam int sampling,
-                                                                                                     @RequestParam String transformation) {
+                                                                                                     @RequestParam String transformation,
+                                                                                                     @RequestParam(defaultValue = "false") boolean fillGaps) {
         long begin = from.toInstant().toEpochMilli();
         long end = to.toInstant().toEpochMilli();
         inputValidator.checkValidComponent(component);
@@ -58,7 +59,7 @@ public class EventHistoryResource {
         inputValidator.checkBeginTransformedHistoryLessThan1MonthAgo(begin);
         inputValidator.checkValidTransformation(transformation);
 
-        Collection<? extends Event> events = sensorDataHandler.getTransformedEventHistory(sampling, component, transformation, begin, end);
+        Collection<? extends Event> events = sensorDataHandler.getTransformedEventHistory(sampling, component, transformation, begin, end, fillGaps);
         return ResponseEntity.ok()
                 .body(events);
     }

@@ -36,6 +36,7 @@ public class SensorDataHandler {
     @Autowired
     private DatabaseHandler databaseHandler;
     private XYZSensorEventCollection xyzSensorEventCollection;
+    @Autowired
     private ComponentInfoCollection componentInfo;
     private CopyOnWriteArrayList<MotorControllerEvent> motorControllerEvents;
 
@@ -50,12 +51,11 @@ public class SensorDataHandler {
         } catch (MqttException e) {
             MqttHandler.handle_execp_gracefully(e);
         }
-        componentInfo = new ComponentInfoCollection(new CopyOnWriteArrayList<>());
         xyzSensorEventCollection = new XYZSensorEventCollection(new CopyOnWriteArrayList<>(),
                 new CopyOnWriteArrayList<>());
         motorControllerEvents = new CopyOnWriteArrayList<>();
         // The SBrick does not send its information so we need to add it manually
-        componentInfo.getComponentInfos().add(new ComponentInfo("motor", 20000.0));
+        componentInfo.getComponentInfos().add(new ComponentInfo("motor", 20.0));
         myMqttHandler.setCallback(new MqttDataCallback(componentInfo,
                 xyzSensorEventCollection, motorControllerEvents, databaseHandler));
     }
@@ -185,7 +185,7 @@ public class SensorDataHandler {
      * @param end            The end of the interval
      */
     public Collection<? extends Event> getTransformedEventHistory(long sampleInterval, String comp, String transform, long begin,
-                                                                  long end) throws IllegalArgumentException, LegoTruckException {
+                                                                  long end, boolean fillGaps) throws IllegalArgumentException, LegoTruckException {
         try {
             Components component = Components.valueOf(comp.toUpperCase());
 
@@ -196,26 +196,28 @@ public class SensorDataHandler {
             switch (transformation) {
                 case MAX:
                     if (component == Components.GYROSCOPE)
-                        return databaseHandler.getGyroscopeMaxEventsInInterval(begin, end, sampleInterval);
+                        return databaseHandler.getGyroscopeMaxEventsInInterval(begin, end, sampleInterval, fillGaps);
                     if (component == Components.ACCELEROMETER)
-                        return databaseHandler.getAccelerometerMaxEventsInInterval(begin, end, sampleInterval);
+                        return databaseHandler.getAccelerometerMaxEventsInInterval(begin, end, sampleInterval, fillGaps);
                 case MEAN:
                     if (component == Components.GYROSCOPE)
-                        return databaseHandler.getGyroscopeMeanEventsInInterval(begin, end, sampleInterval);
+                        return databaseHandler.getGyroscopeMeanEventsInInterval(begin, end, sampleInterval, fillGaps);
                     if (component == Components.ACCELEROMETER)
-                        return databaseHandler.getAccelerometerMeanEventsInInterval(begin, end, sampleInterval);
+                        return databaseHandler.getAccelerometerMeanEventsInInterval(begin, end, sampleInterval, fillGaps);
 
                 case MIN:
                     if (component == Components.GYROSCOPE)
-                        return databaseHandler.getGyroscopeMinEventsInInterval(begin, end, sampleInterval);
+                        return databaseHandler.getGyroscopeMinEventsInInterval(begin, end, sampleInterval, fillGaps);
                     if (component == Components.ACCELEROMETER)
-                        return databaseHandler.getAccelerometerMinEventsInInterval(begin, end, sampleInterval);
+                        return databaseHandler.getAccelerometerMinEventsInInterval(begin, end, sampleInterval, fillGaps);
             }
         } catch (NullPointerException | IllegalArgumentException np) {
             throw new LegoTruckException(Errors.RESOURCE_EMPTY, comp, transform);
         }
         throw new LegoTruckException(Errors.INVALID_PARAMETER);
     }
+
+
 }
 
 

@@ -33,7 +33,7 @@ public class EventStreamingResource {
 
         inputValidator.checkValidStreamingComponents(fields, transformation);
         inputValidator.checkValidTransformation(transformation);
-        inputValidator.checkThatIntervalIsBiggerThanStorageInterval(interval);
+        inputValidator.checkThatIntervalIsBiggerThanStorageInterval(fields, interval);
         String streamString = dataStreamingHandler.getStream(interval, fields, transformation);
         return ResponseEntity.ok()
                 .body(streamString);

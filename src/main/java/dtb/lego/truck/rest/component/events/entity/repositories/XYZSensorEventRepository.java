@@ -33,7 +33,7 @@ public interface XYZSensorEventRepository<T extends XYZSensorEvent> extends Even
      * For more information on the time_bucket: https://docs.timescale.com/latest/api#time_bucket
      */
     @Query(value = "WITH aggregation as" +
-            "(select time_bucket_gapfill(:interval ,timestamp, :begin, :end) as interval, MAX(name) AS name," +
+            "(select time_bucket(:interval ,timestamp) as interval, MAX(name) AS name," +
             "AVG(x) AS x, AVG(y) AS y, AVG(z) AS z " +
             "from #{#entityName} " +
             "where timestamp between :begin and :end group by interval " +
@@ -99,7 +99,6 @@ public interface XYZSensorEventRepository<T extends XYZSensorEvent> extends Even
                                            @Param("end") long end,
                                            @Param("interval") long interval);
 
-
     /**
      * Uses the timescaleDB time_bucket function to create the intervals and applies the the transforms over them.
      * The use of the WITH clause is just because the final name of the timestamp column needing to be Timestamp
@@ -118,5 +117,103 @@ public interface XYZSensorEventRepository<T extends XYZSensorEvent> extends Even
     Collection<T> findFirstEventsInInterval(@Param("begin") long begin,
                                             @Param("end") long end,
                                             @Param("interval") long interval);
+
+
+    /**
+     * Uses the timescaleDB time_bucket function to create the intervals and applies the the transforms over them.
+     * The use of the WITH clause is just because the final name of the timestamp column needing to be Timestamp
+     * for the JPA to properly package the object. It also fills the gaps with null values when there are no measurements.
+     * <p>
+     * For more information on the time_bucket: https://docs.timescale.com/latest/api#time_bucket
+     */
+    @Query(value = "WITH aggregation as" +
+            "(select time_bucket_gapfill(:interval ,timestamp, :begin, :end ) as interval, MAX(name) AS name,first(x,timestamp) AS x,first(y,timestamp) AS y" +
+            ", first(z,timestamp) AS z " +
+            "from #{#entityName} " +
+            "where timestamp between :begin and :end group by interval " +
+            "order by interval desc)" +
+            "SELECT interval as timestamp, name, x,y,z from aggregation",
+            nativeQuery = true)
+    Collection<T> findFirstEventsInIntervalFillingGaps(@Param("begin") long begin,
+                                                       @Param("end") long end,
+                                                       @Param("interval") long interval);
+
+
+    /**
+     * Uses the timescaleDB time_bucket function to create the intervals and applies the the transforms over them.
+     * The use of the WITH clause is just because the final name of the timestamp column needing to be Timestamp
+     * for the JPA to properly package the object. It also fills the gaps with null values when there are no measurements.
+     * <p>
+     * For more information on the time_bucket: https://docs.timescale.com/latest/api#time_bucket
+     */
+    @Query(value = "WITH aggregation as" +
+            "(select time_bucket_gapfill(:interval ,timestamp, :begin, :end) as interval, MAX(name) AS name," +
+            "AVG(x) AS x, AVG(y) AS y, AVG(z) AS z " +
+            "from #{#entityName} " +
+            "where timestamp between :begin and :end group by interval " +
+            "order by interval desc)" +
+            "SELECT interval as timestamp, name, x,y,z from aggregation",
+            nativeQuery = true)
+    Collection<T> findAvgEventsInIntervalFillingGaps(@Param("begin") long begin,
+                                                     @Param("end") long end,
+                                                     @Param("interval") long interval);
+
+    /**
+     * Uses the timescaleDB time_bucket function to create the intervals and applies the the transforms over them.
+     * The use of the WITH clause is just because the final name of the timestamp column needing to be Timestamp
+     * for the JPA to properly package the object. It also fills the gaps with null values when there are no measurements.
+     * <p>
+     * For more information on the time_bucket: https://docs.timescale.com/latest/api#time_bucket
+     */
+    @Query(value = "WITH aggregation as" +
+            "(select time_bucket_gapfill(:interval ,timestamp, :begin, :end) as interval, MAX(name) AS name,max(x) AS x, max(y) AS y, max(z) AS z " +
+            "from #{#entityName} " +
+            "where timestamp between :begin and :end group by interval " +
+            "order by interval desc)" +
+            "SELECT interval as timestamp, name, x,y,z from aggregation",
+            nativeQuery = true)
+    Collection<T> findMaxEventsInIntervalFillingGaps(@Param("begin") long begin,
+                                                     @Param("end") long end,
+                                                     @Param("interval") long interval);
+
+    /**
+     * Uses the timescaleDB time_bucket function to create the intervals and applies the the transforms over them.
+     * The use of the WITH clause is just because the final name of the timestamp column needing to be Timestamp
+     * for the JPA to properly package the object. It also fills the gaps with null values when there are no measurements.
+     * <p>
+     * For more information on the time_bucket: https://docs.timescale.com/latest/api#time_bucket
+     */
+    @Query(value = "WITH aggregation as" +
+            "(select time_bucket_gapfill(:interval ,timestamp, :begin, :end) as interval, MAX(name) AS name,MIN(x) AS x, MIN(y) AS y, MIN(z) AS z " +
+            "from #{#entityName} " +
+            "where timestamp between :begin and :end group by interval " +
+            "order by interval desc)" +
+            "SELECT interval as timestamp, name, x,y,z from aggregation",
+            nativeQuery = true)
+    Collection<T> findMinEventsInIntervalFillingGaps(@Param("begin") long begin,
+                                                     @Param("end") long end,
+                                                     @Param("interval") long interval);
+
+    /**
+     * Uses the timescaleDB time_bucket function to create the intervals and applies the the transforms over them.
+     * The use of the WITH clause is just because the final name of the timestamp column needing to be Timestamp
+     * for the JPA to properly package the object. It also fills the gaps with null values when there are no measurements.
+     * <p>
+     * For more information on the time_bucket: https://docs.timescale.com/latest/api#time_bucket
+     */
+    @Query(value = "WITH aggregation as" +
+            "(select time_bucket_gapfill(:interval ,timestamp, :begin, :end) as interval, MAX(name) AS name,last(x,timestamp) AS x,last(y,timestamp) AS y" +
+            ", last(z,timestamp) AS z " +
+            "from #{#entityName} " +
+            "where timestamp between :begin and :end group by interval " +
+            "order by interval desc)" +
+            "SELECT interval as timestamp, name, x,y,z from aggregation",
+            nativeQuery = true)
+    Collection<T> findLastEventsInIntervalFillingGaps(@Param("begin") long begin,
+                                                      @Param("end") long end,
+                                                      @Param("interval") long interval);
+
+
+
 
 }

@@ -12,6 +12,7 @@ import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -26,7 +27,9 @@ public class MqttDataCallback implements MqttCallback {
      * the callback handler. If there is a change to automatically store the messages as they come in there is no use
      * for this Collections.
      */
+    @Autowired
     private ComponentInfoCollection myComponents;
+
     private XYZSensorEventCollection xyzSensorEventCollection;
     private CopyOnWriteArrayList<MotorControllerEvent> motorControllerEvents;
     private DatabaseHandler databaseHandler;

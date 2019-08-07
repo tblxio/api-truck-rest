@@ -49,7 +49,7 @@ public class EventIntervalResource {
                                                                      @PathVariable String transformation) {
         inputValidator.checkValidComponent(component);
         inputValidator.checkValidTransformation(transformation);
-        inputValidator.checkThatIntervalIsBiggerThanStorageInterval(interval);
+        inputValidator.checkThatIntervalIsBiggerThanStorageInterval(component, interval);
 
         final Event lastEvent = sensorDataHandler.getTransformedEvent(interval, component, transformation);
         return ResponseEntity.ok()
