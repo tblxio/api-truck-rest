@@ -204,12 +204,16 @@ public class SensorDataHandler {
                         return databaseHandler.getGyroscopeMeanEventsInInterval(begin, end, sampleInterval, fillGaps);
                     if (component == Components.ACCELEROMETER)
                         return databaseHandler.getAccelerometerMeanEventsInInterval(begin, end, sampleInterval, fillGaps);
-
                 case MIN:
                     if (component == Components.GYROSCOPE)
                         return databaseHandler.getGyroscopeMinEventsInInterval(begin, end, sampleInterval, fillGaps);
                     if (component == Components.ACCELEROMETER)
                         return databaseHandler.getAccelerometerMinEventsInInterval(begin, end, sampleInterval, fillGaps);
+                case MEDIAN:
+                    if (component == Components.GYROSCOPE)
+                        return databaseHandler.getGyroscopeMedianEventsInInterval(begin, end, sampleInterval, fillGaps);
+                    if (component == Components.ACCELEROMETER)
+                        return databaseHandler.getAccelerometerMedianEventsInInterval(begin, end, sampleInterval, fillGaps);
             }
         } catch (NullPointerException | IllegalArgumentException np) {
             throw new LegoTruckException(Errors.RESOURCE_EMPTY, comp, transform);

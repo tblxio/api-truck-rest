@@ -81,6 +81,11 @@ public class DatabaseHandler {
         return gyroscopeEventRepository.findMinEventsInInterval(begin, end, interval);
     }
 
+    Collection<GyroscopeEvent> getGyroscopeMedianEventsInInterval(long begin, long end, long interval, boolean fillGaps) {
+        if (fillGaps) return gyroscopeEventRepository.findMedianEventsInIntervalFillingGaps(begin, end, interval);
+        return gyroscopeEventRepository.findMedianEventsInInterval(begin, end, interval);
+    }
+
     Collection<AccelerometerEvent> getAccelerometerMeanEventsInInterval(long begin, long end, long interval, boolean fillGaps) {
         if (fillGaps) return accelerometerEventRepository.findAvgEventsInIntervalFillingGaps(begin, end, interval);
         return accelerometerEventRepository.findAvgEventsInInterval(begin, end, interval);
@@ -94,6 +99,11 @@ public class DatabaseHandler {
     Collection<AccelerometerEvent> getAccelerometerMinEventsInInterval(long begin, long end, long interval, boolean fillGaps) {
         if (fillGaps) return accelerometerEventRepository.findMinEventsInIntervalFillingGaps(begin, end, interval);
         return accelerometerEventRepository.findMinEventsInInterval(begin, end, interval);
+    }
+
+    Collection<AccelerometerEvent> getAccelerometerMedianEventsInInterval(long begin, long end, long interval, boolean fillGaps) {
+        if (fillGaps) return accelerometerEventRepository.findMedianEventsInIntervalFillingGaps(begin, end, interval);
+        return accelerometerEventRepository.findMedianEventsInInterval(begin, end, interval);
     }
 
     XYZSensorEvent getXYZSensorMeanEventInLastInterval(long interval, Components component) {
