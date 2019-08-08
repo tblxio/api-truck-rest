@@ -33,10 +33,7 @@ public class ComponentInfoCollection {
     public ComponentInfo getComponentInfo(Components component) {
         List<ComponentInfo> components = componentInfos.stream().filter(item -> item.getName().equals(component)).
                 collect(Collectors.toList());
-        try {
-            return components.get(0);
-        } catch (IndexOutOfBoundsException e) {
-            throw new LegoTruckException(Errors.RESOURCE_EMPTY, component, "disconnected");
-        }
+        if (components.isEmpty()) throw new LegoTruckException(Errors.RESOURCE_EMPTY, component, "disconnected");
+        return components.get(0);
     }
 }
