@@ -6,5 +6,6 @@ package dtb.lego.truck.rest.component.events.entity;
 public enum Components {
     ACCELEROMETER,
     GYROSCOPE,
-    MOTOR
+    MOTOR,
+    PROXIMITY
 }

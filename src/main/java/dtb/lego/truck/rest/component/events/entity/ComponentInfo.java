@@ -17,7 +17,7 @@ public class ComponentInfo {
     public ComponentInfo(Object name, Object minSamplingInterval) {
         String component = (String) name;
         this.name = Components.valueOf(component.toUpperCase());
-        this.samplingInterval = (double) minSamplingInterval;
+        this.samplingInterval = (Double) minSamplingInterval;
     }
 
 

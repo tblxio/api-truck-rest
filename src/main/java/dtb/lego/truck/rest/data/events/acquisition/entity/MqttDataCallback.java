@@ -3,9 +3,9 @@ package dtb.lego.truck.rest.data.events.acquisition.entity;
 import dtb.lego.truck.rest.component.events.entity.ComponentInfo;
 import dtb.lego.truck.rest.component.events.entity.ComponentInfoCollection;
 import dtb.lego.truck.rest.component.events.entity.events.MotorControllerEvent;
+import dtb.lego.truck.rest.component.events.entity.events.ProximitySensorEvent;
 import dtb.lego.truck.rest.component.events.entity.events.xyz.sensor.AccelerometerEvent;
 import dtb.lego.truck.rest.component.events.entity.events.xyz.sensor.GyroscopeEvent;
-import dtb.lego.truck.rest.component.events.entity.events.xyz.sensor.XYZSensorEventCollection;
 import dtb.lego.truck.rest.data.events.acquisition.control.DatabaseHandler;
 import dtb.lego.truck.rest.errors.Errors;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -13,8 +13,6 @@ import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * This class is used to implement the necessary operations for when a message arrives to the topics in which the
@@ -30,16 +28,11 @@ public class MqttDataCallback implements MqttCallback {
     @Autowired
     private ComponentInfoCollection myComponents;
 
-    private XYZSensorEventCollection xyzSensorEventCollection;
-    private CopyOnWriteArrayList<MotorControllerEvent> motorControllerEvents;
     private DatabaseHandler databaseHandler;
 
-    public MqttDataCallback(ComponentInfoCollection myComponents, XYZSensorEventCollection xyzSensorEventCollection,
-                            CopyOnWriteArrayList<MotorControllerEvent> motorControllerEvents,
+    public MqttDataCallback(ComponentInfoCollection myComponents,
                             DatabaseHandler databaseHandler) {
         this.myComponents = myComponents;
-        this.xyzSensorEventCollection = xyzSensorEventCollection;
-        this.motorControllerEvents = motorControllerEvents;
         this.databaseHandler = databaseHandler;
     }
 
@@ -64,6 +57,7 @@ public class MqttDataCallback implements MqttCallback {
         if (componentName.equals("components")) this.handleComponentsMessage(message);
         if (componentName.equals("imu")) this.handleImuMessage(message);
         if (componentName.equals("motor")) this.handleMotorMessage(message);
+        if (componentName.equals("proximity")) this.handleProximityMessage(message);
     }
 
     @Override
@@ -111,8 +105,6 @@ public class MqttDataCallback implements MqttCallback {
                     accel.get("y"),
                     accel.get("z"), "accelerometer");
 
-            xyzSensorEventCollection.getGyroscopeEvents().add(gyroscopeEvent);
-            xyzSensorEventCollection.getAccelerometerEvents().add(accelerometerEvent);
             databaseHandler.saveXYZSensorEvent(accelerometerEvent, gyroscopeEvent); // Inserts in local database takes around 1ms.
         } catch (Exception e) {
             // Catches exceptions related to malformed payloads
@@ -130,8 +122,20 @@ public class MqttDataCallback implements MqttCallback {
             JSONObject msg = new JSONObject(message.toString());
             JSONObject resp_msg = msg.getJSONObject("resp_msg");
             MotorControllerEvent incoming = new MotorControllerEvent(System.currentTimeMillis(), resp_msg.get("voltage"), resp_msg.get("temperature"), "motor");
-            motorControllerEvents.add(incoming);
             databaseHandler.saveMotorControllerEvent(incoming);
+        } catch (Exception e) {
+            System.out.println("Data should be on the right format  + " + e.getMessage());
+        }
+    }
+
+    /**
+     * Handles the Motor message, that contains information regarding the state of the SBrick Controller,
+     * creating the {@link MotorControllerEvent} object and adding it to the collection
+     */
+    private void handleProximityMessage(MqttMessage message) {
+        try {
+            JSONObject msg = new JSONObject(message.toString());
+            databaseHandler.saveProximitySensorEvent(new ProximitySensorEvent(msg.get("timestamp"), msg.get("distance"), "proximity"));
         } catch (Exception e) {
             System.out.println("Data should be on the right format  + " + e.getMessage());
         }

@@ -4,7 +4,6 @@ import dtb.lego.truck.rest.component.events.entity.ComponentInfoCollection;
 import dtb.lego.truck.rest.component.events.entity.Components;
 import dtb.lego.truck.rest.component.events.entity.Transformations;
 import dtb.lego.truck.rest.data.events.acquisition.entity.LegoTruckException;
-import org.hibernate.mapping.Component;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -57,7 +56,7 @@ public class InputValidator {
     public void checkValidComponentTransformationPair(String requestedComponent, String transformation) {
         Transformations transform = Transformations.valueOf(transformation.toUpperCase());
         Components component = Components.valueOf(requestedComponent.toUpperCase());
-        if (component == Components.MOTOR && transform != Transformations.LAST)
+        if (component == Components.MOTOR || component == Components.PROXIMITY && transform != Transformations.LAST)
             throw new LegoTruckException(Errors.RESOURCE_NOT_FOUND, requestedComponent, transformation);
     }
 

@@ -79,6 +79,3 @@ public class EventHistoryResource {
 
 
 }
-
-//1564756048439196
-//1564756064369489
