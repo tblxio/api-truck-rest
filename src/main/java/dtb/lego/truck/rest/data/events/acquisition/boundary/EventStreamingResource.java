@@ -15,15 +15,16 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(description = "Operations pertaining the real time streaming of events")
 public class EventStreamingResource {
 
-    @Autowired
-    DataStreamingHandler dataStreamingHandler;
+    private DataStreamingHandler dataStreamingHandler;
+    private WebSocketConfig config;
+    private InputValidator inputValidator;
 
     @Autowired
-    WebSocketConfig config;
-
-    @Autowired
-    InputValidator inputValidator;
-
+    public EventStreamingResource(DataStreamingHandler dataStreamingHandler, WebSocketConfig config, InputValidator inputValidator) {
+        this.dataStreamingHandler = dataStreamingHandler;
+        this.config = config;
+        this.inputValidator = inputValidator;
+    }
 
     @ApiOperation(value = "Returns the topic of the websocket with the request event stream")
     @GetMapping("/events/stream/{interval}/{fields}/{transformation}")

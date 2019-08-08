@@ -25,22 +25,23 @@ import java.util.concurrent.ConcurrentMap;
 public class DataStreamingHandler {
 
     private final MessageSendingOperations<String> messagingTemplate;
-    @Autowired
-    MotorDriveHandler motorDriveHandler;
+    private MotorDriveHandler motorDriveHandler;
     /**
      * Used to save the information on the subscribed clients in order to stop streaming when they disconnect from the
      * requested stream, since every requested stream is given a unique destination and session ID. It is concurrent
      * since it needs to be checked by the EventListeners and the streamers which run in separate threads.
      */
     private ConcurrentMap<String, String> subscriptions;
-    @Autowired
     private SensorDataHandler sensorDataHandler;
 
     @Autowired
-    public DataStreamingHandler(MessageSendingOperations<String> messagingTemplate) {
+    public DataStreamingHandler(MessageSendingOperations<String> messagingTemplate, MotorDriveHandler motorDriveHandler, SensorDataHandler sensorDataHandler) {
         this.messagingTemplate = messagingTemplate;
+        this.motorDriveHandler = motorDriveHandler;
         this.subscriptions = new ConcurrentHashMap<>();
+        this.sensorDataHandler = sensorDataHandler;
     }
+
 
 
     /**
@@ -85,7 +86,7 @@ public class DataStreamingHandler {
             try {
                 for (String component : components) {
                     Event ne = sensorDataHandler.getTransformedEvent(interval, component, transformation);
-                    if (ne == null) throw new LegoTruckException(Errors.RESOURCE_EMPTY);
+                    if (ne == null) ne = new Event(System.currentTimeMillis());
                     messagingTemplate.convertAndSend(destination, ne);
                 }
                 Thread.sleep(interval);

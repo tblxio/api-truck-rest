@@ -24,18 +24,22 @@ import java.util.Collection;
 @Component
 public class DatabaseHandler {
 
-    @Autowired
+
     private AccelerometerEventRepository accelerometerEventRepository;
-
-    @Autowired
     private GyroscopeEventRepository gyroscopeEventRepository;
-
-    @Autowired
     private MotorControllerEventRepository motorControllerEventRepository;
-
-    @Autowired
     private ProximitySensorEventRepository proximitySensorEventRepository;
 
+    @Autowired
+    public DatabaseHandler(AccelerometerEventRepository accelerometerEventRepository,
+                           GyroscopeEventRepository gyroscopeEventRepository,
+                           MotorControllerEventRepository motorControllerEventRepository,
+                           ProximitySensorEventRepository proximitySensorEventRepository) {
+        this.accelerometerEventRepository = accelerometerEventRepository;
+        this.gyroscopeEventRepository = gyroscopeEventRepository;
+        this.motorControllerEventRepository = motorControllerEventRepository;
+        this.proximitySensorEventRepository = proximitySensorEventRepository;
+    }
 
     void saveXYZSensorEvents(Collection<AccelerometerEvent> accelerometerEvents,
                              Collection<GyroscopeEvent> gyroscopeEvents

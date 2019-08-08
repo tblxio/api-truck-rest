@@ -20,11 +20,14 @@ import java.util.Collection;
 @Api(description = "Operations pertaining the acquisition of historical data of the events")
 public class EventHistoryResource {
 
-    @Autowired
     private SensorDataHandler sensorDataHandler;
+    private InputValidator inputValidator;
 
     @Autowired
-    private InputValidator inputValidator;
+    public EventHistoryResource(SensorDataHandler sensorDataHandler, InputValidator inputValidator) {
+        this.sensorDataHandler = sensorDataHandler;
+        this.inputValidator = inputValidator;
+    }
 
     @ApiOperation(value = "Get all the events from the component contained in the requested interval." +
             "Set 0 on end to use the current time instead")

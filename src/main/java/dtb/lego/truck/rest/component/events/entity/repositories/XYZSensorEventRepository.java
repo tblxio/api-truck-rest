@@ -185,7 +185,7 @@ public interface XYZSensorEventRepository<T extends XYZSensorEvent> extends Even
             "max(name) as name," +
             "percentile_cont(0.5) within group(order by x) as x," +
             "percentile_cont(0.5) within group(order by y) as y," +
-            "percentile_cont(0.5) within group(order by z) as z" +
+            "percentile_cont(0.5) within group(order by z) as z " +
             "from #{#entityName} " +
             "where timestamp between :begin and :end " +
             "group by interval order by interval desc)" +
@@ -203,11 +203,11 @@ public interface XYZSensorEventRepository<T extends XYZSensorEvent> extends Even
      * For more information on the time_bucket: https://docs.timescale.com/latest/api#time_bucket
      */
     @Query(value = "WITH aggregation as (" +
-            "select time_bucket_gapfil(:interval ,timestamp, :begin, :end) as interval," +
+            "select time_bucket_gapfill(:interval ,timestamp, :begin, :end) as interval," +
             "max(name) as name," +
             "percentile_cont(0.5) within group(order by x) as x," +
             "percentile_cont(0.5) within group(order by y) as y," +
-            "percentile_cont(0.5) within group(order by z) as z" +
+            "percentile_cont(0.5) within group(order by z) as z " +
             "from #{#entityName} " +
             "where timestamp between :begin and :end " +
             "group by interval order by interval desc)" +

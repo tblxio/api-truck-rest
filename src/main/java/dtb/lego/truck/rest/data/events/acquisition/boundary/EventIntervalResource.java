@@ -17,11 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(value = "Interval", description = "Operations pertaining to events in the last X time units")
 public class EventIntervalResource {
 
-    @Autowired
     private SensorDataHandler sensorDataHandler;
+    private InputValidator inputValidator;
 
     @Autowired
-    private InputValidator inputValidator;
+    public EventIntervalResource(SensorDataHandler sensorDataHandler, InputValidator inputValidator) {
+        this.sensorDataHandler = sensorDataHandler;
+        this.inputValidator = inputValidator;
+    }
 
     @ApiOperation(value = "Returns the last value acquired from the requested component", response = Event.class)
     @ApiResponses(value = {

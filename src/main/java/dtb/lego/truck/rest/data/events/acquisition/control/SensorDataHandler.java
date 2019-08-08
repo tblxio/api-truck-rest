@@ -25,13 +25,19 @@ import java.util.Collection;
 @DependsOn("MqttHandler")
 public class SensorDataHandler {
 
-    @Autowired
+
     private MqttHandler myMqttHandler;
-    @Autowired
+
     private DatabaseHandler databaseHandler;
-    @Autowired
+
     private ComponentInfoCollection componentInfo;
 
+    @Autowired
+    public SensorDataHandler(MqttHandler myMqttHandler, DatabaseHandler databaseHandler, ComponentInfoCollection componentInfo) {
+        this.myMqttHandler = myMqttHandler;
+        this.databaseHandler = databaseHandler;
+        this.componentInfo = componentInfo;
+    }
 
     /**
      * Performs all the setup operations after the construction of the Bean, like subscribing to the Mqtt topics, initializing

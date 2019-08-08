@@ -135,9 +135,11 @@ public class MqttDataCallback implements MqttCallback {
     private void handleProximityMessage(MqttMessage message) {
         try {
             JSONObject msg = new JSONObject(message.toString());
-            databaseHandler.saveProximitySensorEvent(new ProximitySensorEvent(msg.get("timestamp"), msg.get("distance"), "proximity"));
+            long timestamp = (long) msg.get("timestamp");
+            databaseHandler.saveProximitySensorEvent(new ProximitySensorEvent(timestamp / 1000, msg.get("distance"), "proximity"));
+
         } catch (Exception e) {
-            System.out.println("Data should be on the right format  + " + e.getMessage());
+            System.out.println("[Proximity] Data should be on the right format  + " + e.getMessage());
         }
     }
 
