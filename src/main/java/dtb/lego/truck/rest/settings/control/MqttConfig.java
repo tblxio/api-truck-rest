@@ -12,7 +12,7 @@ public class MqttConfig {
     SettingManager settingManager;
 
     public String getMqttHost() {
-        return settingManager.getValue(SettingKey.valueOf("MQTT_HOST")) + ":" + getMqttPort();
+        return settingManager.getValue(SettingKey.valueOf("MQTT_HOST"));
     }
 
     public String getMqttPort() {

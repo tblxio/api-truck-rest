@@ -4,6 +4,7 @@ import dtb.lego.truck.rest.data.events.acquisition.entity.LegoTruckException;
 import dtb.lego.truck.rest.errors.Errors;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -15,11 +16,12 @@ import java.util.stream.Collectors;
  */
 @Getter
 @Setter
+@Component
 public class ComponentInfoCollection {
     CopyOnWriteArrayList<ComponentInfo> componentInfos;
 
-    public ComponentInfoCollection(CopyOnWriteArrayList<ComponentInfo> componentInfos) {
-        this.componentInfos = componentInfos;
+    public ComponentInfoCollection() {
+        this.componentInfos = new CopyOnWriteArrayList<>();
     }
 
     /**

@@ -6,8 +6,6 @@ import dtb.lego.truck.rest.component.events.entity.ComponentInfoCollection;
 import dtb.lego.truck.rest.component.events.entity.Components;
 import dtb.lego.truck.rest.component.events.entity.Transformations;
 import dtb.lego.truck.rest.component.events.entity.events.Event;
-import dtb.lego.truck.rest.component.events.entity.events.MotorControllerEvent;
-import dtb.lego.truck.rest.component.events.entity.events.xyz.sensor.XYZSensorEventCollection;
 import dtb.lego.truck.rest.data.events.acquisition.entity.LegoTruckException;
 import dtb.lego.truck.rest.data.events.acquisition.entity.MqttDataCallback;
 import dtb.lego.truck.rest.errors.Errors;
@@ -18,7 +16,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.Collection;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * This class handles all the operations pertaining to data acquisition from the sensors. It is as a middleman between the
@@ -28,16 +25,13 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @DependsOn("MqttHandler")
 public class SensorDataHandler {
 
-    private final int motorDBSaveInterval = 60000;
-    @Autowired
-    MotorDataHandler motorDataHandler;
     @Autowired
     private MqttHandler myMqttHandler;
     @Autowired
     private DatabaseHandler databaseHandler;
-    private XYZSensorEventCollection xyzSensorEventCollection;
+    @Autowired
     private ComponentInfoCollection componentInfo;
-    private CopyOnWriteArrayList<MotorControllerEvent> motorControllerEvents;
+
 
     /**
      * Performs all the setup operations after the construction of the Bean, like subscribing to the Mqtt topics, initializing
@@ -50,14 +44,8 @@ public class SensorDataHandler {
         } catch (MqttException e) {
             MqttHandler.handle_execp_gracefully(e);
         }
-        componentInfo = new ComponentInfoCollection(new CopyOnWriteArrayList<>());
-        xyzSensorEventCollection = new XYZSensorEventCollection(new CopyOnWriteArrayList<>(),
-                new CopyOnWriteArrayList<>());
-        motorControllerEvents = new CopyOnWriteArrayList<>();
         // The SBrick does not send its information so we need to add it manually
-        componentInfo.getComponentInfos().add(new ComponentInfo("motor", 20000.0));
-        myMqttHandler.setCallback(new MqttDataCallback(componentInfo,
-                xyzSensorEventCollection, motorControllerEvents, databaseHandler));
+        myMqttHandler.setCallback(new MqttDataCallback(componentInfo, databaseHandler));
     }
 
     /**
@@ -75,16 +63,16 @@ public class SensorDataHandler {
             Transformations transformation = Transformations.valueOf(transform.toUpperCase());
             switch (transformation) {
                 case MAX:
-                    if (component == Components.MOTOR)
-                        throw new LegoTruckException(Errors.RESOURCE_NOT_FOUND, transformation, "Only last allowed for Motor");
+                    if (component == Components.MOTOR || component == Components.PROXIMITY)
+                        throw new LegoTruckException(Errors.RESOURCE_NOT_FOUND, transformation, "Only last allowed");
                     return maxEvent(interval, component);
                 case MEAN:
-                    if (component == Components.MOTOR)
-                        throw new LegoTruckException(Errors.RESOURCE_NOT_FOUND, transformation, "Only last allowed for Motor");
+                    if (component == Components.MOTOR || component == Components.PROXIMITY)
+                        throw new LegoTruckException(Errors.RESOURCE_NOT_FOUND, transformation, "Only last allowed");
                     return meanEvent(interval, component);
                 case MIN:
-                    if (component == Components.MOTOR)
-                        throw new LegoTruckException(Errors.RESOURCE_NOT_FOUND, transformation, "Only last allowed for Motor");
+                    if (component == Components.MOTOR || component == Components.PROXIMITY)
+                        throw new LegoTruckException(Errors.RESOURCE_NOT_FOUND, transformation, "Only last allowed");
                     return minEvent(interval, component);
                 case LAST:
                     return getLastEvent(component);
@@ -102,6 +90,7 @@ public class SensorDataHandler {
      */
     private Event getLastEvent(Components component) {
         if (component == Components.MOTOR) return databaseHandler.getLastMotorControllerEvent();
+        if (component == Components.PROXIMITY) return databaseHandler.getLastProximityEvent();
         return databaseHandler.getLastXYZSensorEvent(component);
     }
 
@@ -157,6 +146,8 @@ public class SensorDataHandler {
                 return databaseHandler.getAccelerometerEventsInInterval(begin, end);
             case MOTOR:
                 return databaseHandler.getMotorEventsInInterval(begin, end);
+            case PROXIMITY:
+                return databaseHandler.getProximityEventsInInterval(begin, end);
         }
         throw new LegoTruckException(Errors.INVALID_PARAMETER, component);
     }
@@ -185,7 +176,7 @@ public class SensorDataHandler {
      * @param end            The end of the interval
      */
     public Collection<? extends Event> getTransformedEventHistory(long sampleInterval, String comp, String transform, long begin,
-                                                                  long end) throws IllegalArgumentException, LegoTruckException {
+                                                                  long end, boolean fillGaps) throws IllegalArgumentException, LegoTruckException {
         try {
             Components component = Components.valueOf(comp.toUpperCase());
 
@@ -196,26 +187,37 @@ public class SensorDataHandler {
             switch (transformation) {
                 case MAX:
                     if (component == Components.GYROSCOPE)
-                        return databaseHandler.getGyroscopeMaxEventsInInterval(begin, end, sampleInterval);
+                        return databaseHandler.getGyroscopeMaxEventsInInterval(begin, end, sampleInterval, fillGaps);
                     if (component == Components.ACCELEROMETER)
-                        return databaseHandler.getAccelerometerMaxEventsInInterval(begin, end, sampleInterval);
+                        return databaseHandler.getAccelerometerMaxEventsInInterval(begin, end, sampleInterval, fillGaps);
                 case MEAN:
                     if (component == Components.GYROSCOPE)
-                        return databaseHandler.getGyroscopeMeanEventsInInterval(begin, end, sampleInterval);
+                        return databaseHandler.getGyroscopeMeanEventsInInterval(begin, end, sampleInterval, fillGaps);
                     if (component == Components.ACCELEROMETER)
-                        return databaseHandler.getAccelerometerMeanEventsInInterval(begin, end, sampleInterval);
-
+                        return databaseHandler.getAccelerometerMeanEventsInInterval(begin, end, sampleInterval, fillGaps);
                 case MIN:
                     if (component == Components.GYROSCOPE)
-                        return databaseHandler.getGyroscopeMinEventsInInterval(begin, end, sampleInterval);
+                        return databaseHandler.getGyroscopeMinEventsInInterval(begin, end, sampleInterval, fillGaps);
                     if (component == Components.ACCELEROMETER)
-                        return databaseHandler.getAccelerometerMinEventsInInterval(begin, end, sampleInterval);
+                        return databaseHandler.getAccelerometerMinEventsInInterval(begin, end, sampleInterval, fillGaps);
+                case MEDIAN:
+                    if (component == Components.GYROSCOPE)
+                        return databaseHandler.getGyroscopeMedianEventsInInterval(begin, end, sampleInterval, fillGaps);
+                    if (component == Components.ACCELEROMETER)
+                        return databaseHandler.getAccelerometerMedianEventsInInterval(begin, end, sampleInterval, fillGaps);
+                case LAST:
+                    if (component == Components.GYROSCOPE)
+                        return databaseHandler.getGyroscopeLastEventsInInterval(begin, end, sampleInterval, fillGaps);
+                    if (component == Components.ACCELEROMETER)
+                        return databaseHandler.getAccelerometerLastEventsInInterval(begin, end, sampleInterval, fillGaps);
             }
         } catch (NullPointerException | IllegalArgumentException np) {
             throw new LegoTruckException(Errors.RESOURCE_EMPTY, comp, transform);
         }
         throw new LegoTruckException(Errors.INVALID_PARAMETER);
     }
+
+
 }
 
 

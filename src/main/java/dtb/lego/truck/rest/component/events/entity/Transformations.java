@@ -7,7 +7,8 @@ public enum Transformations {
     LAST,
     MEAN,
     MAX,
-    MIN
+    MIN,
+    MEDIAN
 
 
 }

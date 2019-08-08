@@ -2,12 +2,14 @@ package dtb.lego.truck.rest.data.events.acquisition.control;
 
 import dtb.lego.truck.rest.component.events.entity.Components;
 import dtb.lego.truck.rest.component.events.entity.events.MotorControllerEvent;
+import dtb.lego.truck.rest.component.events.entity.events.ProximitySensorEvent;
 import dtb.lego.truck.rest.component.events.entity.events.xyz.sensor.AccelerometerEvent;
 import dtb.lego.truck.rest.component.events.entity.events.xyz.sensor.GyroscopeEvent;
 import dtb.lego.truck.rest.component.events.entity.events.xyz.sensor.XYZSensorEvent;
 import dtb.lego.truck.rest.component.events.entity.repositories.AccelerometerEventRepository;
 import dtb.lego.truck.rest.component.events.entity.repositories.GyroscopeEventRepository;
 import dtb.lego.truck.rest.component.events.entity.repositories.MotorControllerEventRepository;
+import dtb.lego.truck.rest.component.events.entity.repositories.ProximitySensorEventRepository;
 import dtb.lego.truck.rest.data.events.acquisition.entity.LegoTruckException;
 import dtb.lego.truck.rest.errors.Errors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,9 @@ public class DatabaseHandler {
 
     @Autowired
     private MotorControllerEventRepository motorControllerEventRepository;
+
+    @Autowired
+    private ProximitySensorEventRepository proximitySensorEventRepository;
 
 
     void saveXYZSensorEvents(Collection<AccelerometerEvent> accelerometerEvents,
@@ -54,6 +59,10 @@ public class DatabaseHandler {
         motorControllerEventRepository.save(motorControllerEvent);
     }
 
+    public void saveProximitySensorEvent(ProximitySensorEvent proximitySensorEvent) {
+        proximitySensorEventRepository.save(proximitySensorEvent);
+    }
+
     Collection<GyroscopeEvent> getGyroscopeEventsInInterval(long begin, long end) {
         return gyroscopeEventRepository.findEventsInInterval(begin, end);
     }
@@ -66,28 +75,58 @@ public class DatabaseHandler {
         return motorControllerEventRepository.findEventsInInterval(begin, end);
     }
 
-    Collection<GyroscopeEvent> getGyroscopeMeanEventsInInterval(long begin, long end, long interval) {
+    Collection<ProximitySensorEvent> getProximityEventsInInterval(long begin, long end) {
+        return proximitySensorEventRepository.findEventsInInterval(begin, end);
+    }
+
+    Collection<GyroscopeEvent> getGyroscopeMeanEventsInInterval(long begin, long end, long interval, boolean fillGaps) {
+        if (fillGaps) return gyroscopeEventRepository.findAvgEventsInIntervalFillingGaps(begin, end, interval);
         return gyroscopeEventRepository.findAvgEventsInInterval(begin, end, interval);
     }
 
-    Collection<GyroscopeEvent> getGyroscopeMaxEventsInInterval(long begin, long end, long interval) {
+    Collection<GyroscopeEvent> getGyroscopeMaxEventsInInterval(long begin, long end, long interval, boolean fillGaps) {
+        if (fillGaps) return gyroscopeEventRepository.findMaxEventsInIntervalFillingGaps(begin, end, interval);
         return gyroscopeEventRepository.findMaxEventsInInterval(begin, end, interval);
     }
 
-    Collection<GyroscopeEvent> getGyroscopeMinEventsInInterval(long begin, long end, long interval) {
+    Collection<GyroscopeEvent> getGyroscopeMinEventsInInterval(long begin, long end, long interval, boolean fillGaps) {
+        if (fillGaps) return gyroscopeEventRepository.findMinEventsInIntervalFillingGaps(begin, end, interval);
         return gyroscopeEventRepository.findMinEventsInInterval(begin, end, interval);
     }
 
-    Collection<AccelerometerEvent> getAccelerometerMeanEventsInInterval(long begin, long end, long interval) {
+    Collection<GyroscopeEvent> getGyroscopeMedianEventsInInterval(long begin, long end, long interval, boolean fillGaps) {
+        if (fillGaps) return gyroscopeEventRepository.findMedianEventsInIntervalFillingGaps(begin, end, interval);
+        return gyroscopeEventRepository.findMedianEventsInInterval(begin, end, interval);
+    }
+
+    Collection<GyroscopeEvent> getGyroscopeLastEventsInInterval(long begin, long end, long interval, boolean fillGaps) {
+        if (fillGaps) return gyroscopeEventRepository.findLastEventsInIntervalFillingGaps(begin, end, interval);
+        return gyroscopeEventRepository.findLastEventsInIntervalFillingGaps(begin, end, interval);
+    }
+
+    Collection<AccelerometerEvent> getAccelerometerMeanEventsInInterval(long begin, long end, long interval, boolean fillGaps) {
+        if (fillGaps) return accelerometerEventRepository.findAvgEventsInIntervalFillingGaps(begin, end, interval);
         return accelerometerEventRepository.findAvgEventsInInterval(begin, end, interval);
     }
 
-    Collection<AccelerometerEvent> getAccelerometerMaxEventsInInterval(long begin, long end, long interval) {
+    Collection<AccelerometerEvent> getAccelerometerMaxEventsInInterval(long begin, long end, long interval, boolean fillGaps) {
+        if (fillGaps) return accelerometerEventRepository.findMaxEventsInIntervalFillingGaps(begin, end, interval);
         return accelerometerEventRepository.findMaxEventsInInterval(begin, end, interval);
     }
 
-    Collection<AccelerometerEvent> getAccelerometerMinEventsInInterval(long begin, long end, long interval) {
+    Collection<AccelerometerEvent> getAccelerometerMinEventsInInterval(long begin, long end, long interval, boolean fillGaps) {
+        if (fillGaps) return accelerometerEventRepository.findMinEventsInIntervalFillingGaps(begin, end, interval);
         return accelerometerEventRepository.findMinEventsInInterval(begin, end, interval);
+    }
+
+    Collection<AccelerometerEvent> getAccelerometerMedianEventsInInterval(long begin, long end, long interval, boolean fillGaps) {
+        if (fillGaps) return accelerometerEventRepository.findMedianEventsInIntervalFillingGaps(begin, end, interval);
+        return accelerometerEventRepository.findMedianEventsInInterval(begin, end, interval);
+    }
+
+    Collection<AccelerometerEvent> getAccelerometerLastEventsInInterval(long begin, long end, long interval, boolean fillGaps) {
+        if (fillGaps) return accelerometerEventRepository.findLastEventsInIntervalFillingGaps(begin, end, interval);
+        return accelerometerEventRepository.findLastEventsInInterval(begin, end, interval);
     }
 
     XYZSensorEvent getXYZSensorMeanEventInLastInterval(long interval, Components component) {
@@ -137,6 +176,10 @@ public class DatabaseHandler {
         return motorControllerEventRepository.findLastEvent();
     }
 
+    ProximitySensorEvent getLastProximityEvent() {
+        return proximitySensorEventRepository.findLastEvent();
+    }
+
     void deleteEventsInInterval(Components component, long begin, long end) {
         switch (component) {
             case GYROSCOPE:
@@ -145,6 +188,8 @@ public class DatabaseHandler {
                 accelerometerEventRepository.deleteEventsInInterval(begin, end);
             case MOTOR:
                 motorControllerEventRepository.deleteEventsInInterval(begin, end);
+            case PROXIMITY:
+                proximitySensorEventRepository.deleteEventsInInterval(begin, end);
         }
     }
 

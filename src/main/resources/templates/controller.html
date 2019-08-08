@@ -113,6 +113,10 @@
     <br>
     <span id="accelerometermean"></span>
     <br>
+    <br>
+    <b>Proximity Sensor Stream:</b>
+    <br>
+    <span id="proximitylast"></span>
 
 </div>
 
@@ -180,6 +184,7 @@
     connectStream('accelerometer', 'mean', 7000);
     connectStream('accelerometer', 'min', 7500);
     connectStream('accelerometer', 'max', 10000);
+    connectStream('proximity', 'last', 1000);
     get_adc();
 
     function drive() {
@@ -323,12 +328,20 @@
                 mystompClient.subscribe(topicWs, function (data) {
                     try {
                         var obj = JSON.parse(data.body);
-                        outputEl.innerHTML = interval + '<b>ms:</b>   ' +
-                            transformation.toUpperCase() + ': '
-                            + '  <b>x:</b> ' + obj.x.toFixed(5)
-                            + '  <b>y:</b> ' + obj.y.toFixed(5)
-                            + '  <b>z:</b> ' + obj.z.toFixed(5)
-                            + '  <b>Ts</b>: ' + converTimestamp(obj.timestamp * 1000);
+                        if (obj.name == "PROXIMITY") {
+                            outputEl.innerHTML = interval + '<b>ms:</b>   ' +
+                                transformation.toUpperCase() + ': ' +
+                                obj.distance + ' cm' +
+                                '  <b>Ts</b>: ' + converTimestamp(obj.timestamp * 1000);
+                        } else {
+                            outputEl.innerHTML = interval + '<b>ms:</b>   ' +
+                                transformation.toUpperCase() + ': '
+                                + '  <b>x:</b> ' + obj.x.toFixed(5)
+                                + '  <b>y:</b> ' + obj.y.toFixed(5)
+                                + '  <b>z:</b> ' + obj.z.toFixed(5)
+                                + '  <b>Ts</b>: ' + converTimestamp(obj.timestamp * 1000);
+                        }
+
                     } catch (err) {
                         outputEl.innerHTML = '<b>Controller State:</b> ' + ' no data yet';
                     }

@@ -4,7 +4,6 @@ import dtb.lego.truck.rest.MqttHandler;
 import lombok.Getter;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 /**
@@ -67,13 +66,13 @@ public class MotorDataHandler {
         return payload;
     }
 
-    /**
-     * Requests the adcInfo from the SBrick at every dataAcquisitionInterval
-     */
-    @Scheduled(fixedRate = dataAcquisitionInterval)
-    private void requestAdcInfo() {
-        JSONObject requestPayload = generateAdcInfoPayload();
-        myMqttHandler.publishJson(requestPayload, adcRequestTopic);
-    }
+//    /**
+//     * Requests the adcInfo from the SBrick at every dataAcquisitionInterval
+//     */
+//    @Scheduled(fixedRate = dataAcquisitionInterval)
+//    private void requestAdcInfo() {
+//        JSONObject requestPayload = generateAdcInfoPayload();
+//        myMqttHandler.publishJson(requestPayload, adcRequestTopic);
+//    }
 
 }

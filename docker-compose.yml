@@ -8,10 +8,10 @@ services:
     depends_on:
       - mypostgres
     environment:
-      - MQTT_HOST=tcp://techhubmosquitto.westeurope.azurecontainer.io
+      - MQTT_HOST=tcp://mosquitto
       - MQTT_PORT=1883
-      - MQTT_USER=techhub
-      - MQTT_PASS=dtbhub2019
+      - MQTT_USER=demo
+      - MQTT_PASS=demo
     ports:
       - "8080:8080"
       - "3000:3000"
@@ -25,5 +25,10 @@ services:
       - POSTGRES_PASSWORD=demopass
       - POSTGRES_USER=demouser
       - POSTGRES_DB=mydb
+
+  mosquitto:
+    image: toke/mosquitto
+    ports:
+      - "1883:1883"
 
 
