@@ -1,6 +1,8 @@
 package dtb.lego.truck.rest.component.events.entity.events.xyz.sensor;
 
 import dtb.lego.truck.rest.component.events.entity.Components;
+import dtb.lego.truck.rest.data.events.acquisition.entity.LegoTruckException;
+import dtb.lego.truck.rest.errors.Errors;
 
 import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -62,7 +64,7 @@ public class XYZSensorEventCollection {
             case ACCELEROMETER:
                 if (accelerometerEvents.size() > 0) return accelerometerEvents.get(accelerometerEvents.size() - 1);
         }
-        return new XYZSensorEvent();
+        throw new LegoTruckException(Errors.RESOURCE_NOT_FOUND, sensor);
     }
 
     /**

@@ -85,11 +85,10 @@ public class DataStreamingHandler {
             try {
                 for (String component : components) {
                     Event ne = sensorDataHandler.getTransformedEvent(interval, component, transformation);
+                    if (ne == null) throw new LegoTruckException(Errors.RESOURCE_EMPTY);
                     messagingTemplate.convertAndSend(destination, ne);
                 }
                 Thread.sleep(interval);
-            } catch (NullPointerException e) {
-                throw new LegoTruckException(Errors.RESOURCE_EMPTY);
             } catch (InterruptedException e) {
                 throw new LegoTruckException(Errors.INTERNAL_SERVER_ERROR);
             }

@@ -12,6 +12,7 @@ import javax.persistence.Table;
 @Table(name = "accelerometer")
 public class AccelerometerEvent extends XYZSensorEvent {
 
+
     public AccelerometerEvent(Object timestamp, Object x, Object y, Object z, String name) {
         super(timestamp, x, y, z, name);
     }
