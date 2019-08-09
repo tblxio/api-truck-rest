@@ -3,8 +3,9 @@ version: '2'
 services:
 
   app:
-    #    image: dtb/lego-rest
-    build: .
+    build:
+      dockerfile: Dockerfile
+      context: .
     depends_on:
       - mypostgres
     environment:
