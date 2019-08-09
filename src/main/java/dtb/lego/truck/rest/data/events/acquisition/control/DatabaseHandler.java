@@ -1,6 +1,6 @@
 package dtb.lego.truck.rest.data.events.acquisition.control;
 
-import dtb.lego.truck.rest.component.events.entity.Components;
+import dtb.lego.truck.rest.component.events.entity.Component;
 import dtb.lego.truck.rest.component.events.entity.events.MotorControllerEvent;
 import dtb.lego.truck.rest.component.events.entity.events.ProximitySensorEvent;
 import dtb.lego.truck.rest.component.events.entity.events.xyz.sensor.AccelerometerEvent;
@@ -13,7 +13,6 @@ import dtb.lego.truck.rest.component.events.entity.repositories.ProximitySensorE
 import dtb.lego.truck.rest.data.events.acquisition.entity.LegoTruckException;
 import dtb.lego.truck.rest.errors.Errors;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 
@@ -21,7 +20,7 @@ import java.util.Collection;
  * This class contains all the operations regarding the database interaction, therefore, in case of the addition of new
  * functionality it should be extended.
  */
-@Component
+@org.springframework.stereotype.Component
 public class DatabaseHandler {
 
 
@@ -133,7 +132,7 @@ public class DatabaseHandler {
         return accelerometerEventRepository.findLastEventsInInterval(begin, end, interval);
     }
 
-    XYZSensorEvent getXYZSensorMeanEventInLastInterval(long interval, Components component) {
+    XYZSensorEvent getXYZSensorMeanEventInLastInterval(long interval, Component component) {
         switch (component) {
             case GYROSCOPE:
                 return gyroscopeEventRepository.findEventMeaninLastTimeUnits(interval);
@@ -143,7 +142,7 @@ public class DatabaseHandler {
         throw new LegoTruckException(Errors.RESOURCE_NOT_FOUND, component);
     }
 
-    XYZSensorEvent getXYZSensorMaxEventInLastInterval(long interval, Components component) {
+    XYZSensorEvent getXYZSensorMaxEventInLastInterval(long interval, Component component) {
 
         switch (component) {
             case GYROSCOPE:
@@ -155,7 +154,7 @@ public class DatabaseHandler {
 
     }
 
-    XYZSensorEvent getXYZSensorMinEventInLastInterval(long interval, Components component) {
+    XYZSensorEvent getXYZSensorMinEventInLastInterval(long interval, Component component) {
 
         switch (component) {
             case GYROSCOPE:
@@ -166,7 +165,7 @@ public class DatabaseHandler {
         throw new LegoTruckException(Errors.RESOURCE_NOT_FOUND, component);
     }
 
-    XYZSensorEvent getLastXYZSensorEvent(Components component) {
+    XYZSensorEvent getLastXYZSensorEvent(Component component) {
         switch (component) {
             case GYROSCOPE:
                 return gyroscopeEventRepository.findLastEvent();
@@ -184,7 +183,7 @@ public class DatabaseHandler {
         return proximitySensorEventRepository.findLastEvent();
     }
 
-    void deleteEventsInInterval(Components component, long begin, long end) {
+    void deleteEventsInInterval(Component component, long begin, long end) {
         switch (component) {
             case GYROSCOPE:
                 gyroscopeEventRepository.deleteEventsInInterval(begin, end);

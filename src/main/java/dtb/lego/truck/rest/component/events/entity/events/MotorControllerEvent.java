@@ -1,6 +1,6 @@
 package dtb.lego.truck.rest.component.events.entity.events;
 
-import dtb.lego.truck.rest.component.events.entity.Components;
+import dtb.lego.truck.rest.component.events.entity.Component;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONObject;
@@ -26,13 +26,13 @@ public class MotorControllerEvent extends Event {
      */
     private double batVoltage;
     private double temperature;
-    private Components name;
+    private Component name;
 
     public MotorControllerEvent(long timestamp, Object voltage, Object temperature, String name) {
         super(timestamp);
         this.batVoltage = (Double) voltage;
         this.temperature = (Double) temperature;
-        this.name = Components.valueOf(name.toUpperCase());
+        this.name = Component.valueOf(name.toUpperCase());
     }
 
     public MotorControllerEvent() {

@@ -4,7 +4,6 @@ import dtb.lego.truck.rest.data.events.acquisition.entity.LegoTruckException;
 import dtb.lego.truck.rest.errors.Errors;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -16,7 +15,7 @@ import java.util.stream.Collectors;
  */
 @Getter
 @Setter
-@Component
+@org.springframework.stereotype.Component
 public class ComponentInfoCollection {
     CopyOnWriteArrayList<ComponentInfo> componentInfos;
 
@@ -30,7 +29,7 @@ public class ComponentInfoCollection {
      *
      * @param component The requested component.
      */
-    public ComponentInfo getComponentInfo(Components component) {
+    public ComponentInfo getComponentInfo(Component component) {
         List<ComponentInfo> components = componentInfos.stream().filter(item -> item.getName().equals(component)).
                 collect(Collectors.toList());
         if (components.isEmpty()) throw new LegoTruckException(Errors.RESOURCE_EMPTY, component, "disconnected");

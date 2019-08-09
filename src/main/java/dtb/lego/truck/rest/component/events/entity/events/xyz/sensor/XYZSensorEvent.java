@@ -1,6 +1,6 @@
 package dtb.lego.truck.rest.component.events.entity.events.xyz.sensor;
 
-import dtb.lego.truck.rest.component.events.entity.Components;
+import dtb.lego.truck.rest.component.events.entity.Component;
 import dtb.lego.truck.rest.component.events.entity.events.Event;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,14 +32,14 @@ public class XYZSensorEvent extends Event {
     private Double x;
     private Double y;
     private Double z;
-    private Components name;
+    private Component name;
 
     public XYZSensorEvent(Object timestamp, Object x, Object y, Object z, String name) {
         super((long) timestamp);
         this.x = (double) x;
         this.y = (double) y;
         this.z = (double) z;
-        this.name = Components.valueOf(name.toUpperCase());
+        this.name = Component.valueOf(name.toUpperCase());
     }
 
     public XYZSensorEvent() {

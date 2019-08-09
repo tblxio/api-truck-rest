@@ -1,6 +1,6 @@
 package dtb.lego.truck.rest.component.events.entity.events;
 
-import dtb.lego.truck.rest.component.events.entity.Components;
+import dtb.lego.truck.rest.component.events.entity.Component;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,12 +24,12 @@ public class ProximitySensorEvent extends Event {
      * the SBrick.
      */
     private double distance;
-    private Components name;
+    private Component name;
 
     public ProximitySensorEvent(Object timestamp, Object distance, String name) {
         super((long) timestamp);
         this.distance = (Double) distance;
-        this.name = Components.valueOf(name.toUpperCase());
+        this.name = Component.valueOf(name.toUpperCase());
     }
 
     public ProximitySensorEvent() {

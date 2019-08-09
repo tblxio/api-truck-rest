@@ -1,8 +1,8 @@
 package dtb.lego.truck.rest.component.events.boundary;
 
+import dtb.lego.truck.rest.component.events.entity.Component;
 import dtb.lego.truck.rest.component.events.entity.ComponentInfo;
-import dtb.lego.truck.rest.component.events.entity.Components;
-import dtb.lego.truck.rest.component.events.entity.Transformations;
+import dtb.lego.truck.rest.component.events.entity.Transformation;
 import dtb.lego.truck.rest.data.events.acquisition.control.SensorDataHandler;
 import dtb.lego.truck.rest.errors.InputValidator;
 import io.swagger.annotations.Api;
@@ -28,8 +28,8 @@ public class ComponentsResource {
 
     @ApiOperation(value = "Returns the components registered in the system")
     @GetMapping("/components")
-    public ResponseEntity<Components[]> getComponents() {
-        Components[] components = Components.values();
+    public ResponseEntity<Component[]> getComponents() {
+        Component[] components = Component.values();
         return ResponseEntity.ok()
                 .body(components);
     }
@@ -38,15 +38,15 @@ public class ComponentsResource {
     @GetMapping("/components/{component}")
     public ResponseEntity<ComponentInfo> getComponentInfo(@PathVariable String component) {
         inputValidator.checkValidComponent(component);
-        ComponentInfo info = sensorDataHandler.getComponentInfo(Components.valueOf(component.toUpperCase()));
+        ComponentInfo info = sensorDataHandler.getComponentInfo(Component.valueOf(component.toUpperCase()));
         return ResponseEntity.ok()
                 .body(info);
     }
 
     @ApiOperation(value = "Returns the transformations registered in the system, which can be used when downsampling the data")
     @GetMapping("/transformations")
-    public ResponseEntity<Transformations[]> getTransformations() {
-        Transformations[] transformations = Transformations.values();
+    public ResponseEntity<Transformation[]> getTransformations() {
+        Transformation[] transformations = Transformation.values();
         return ResponseEntity.ok()
                 .body(transformations);
     }

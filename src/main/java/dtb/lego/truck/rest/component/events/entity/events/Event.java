@@ -1,6 +1,6 @@
 package dtb.lego.truck.rest.component.events.entity.events;
 
-import dtb.lego.truck.rest.component.events.entity.Components;
+import dtb.lego.truck.rest.component.events.entity.Component;
 import org.springframework.data.repository.NoRepositoryBean;
 
 import javax.persistence.Id;
@@ -15,7 +15,7 @@ import javax.persistence.MappedSuperclass;
 public class Event extends Object {
     @Id
     Long timestamp;
-    Components name;
+    Component name;
 
     public Event(long timestamp) {
         this.timestamp = timestamp;

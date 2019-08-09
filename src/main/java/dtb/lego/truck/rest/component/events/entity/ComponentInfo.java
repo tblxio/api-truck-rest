@@ -11,12 +11,12 @@ import lombok.Setter;
 @Setter
 public class ComponentInfo {
 
-    private Components name;
+    private Component name;
     private Double samplingInterval;
 
     public ComponentInfo(Object name, Object minSamplingInterval) {
         String component = (String) name;
-        this.name = Components.valueOf(component.toUpperCase());
+        this.name = Component.valueOf(component.toUpperCase());
         this.samplingInterval = (Double) minSamplingInterval;
     }
 

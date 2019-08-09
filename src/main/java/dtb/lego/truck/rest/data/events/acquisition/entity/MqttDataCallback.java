@@ -66,7 +66,7 @@ public class MqttDataCallback implements MqttCallback {
 
 
     /**
-     * Handles the Components message, that contains information regarding the different components in the system,
+     * Handles the Component message, that contains information regarding the different components in the system,
      * creating the {@link ComponentInfo} object and adding it to the collection
      */
     private void handleComponentsMessage(MqttMessage message) {
@@ -82,7 +82,7 @@ public class MqttDataCallback implements MqttCallback {
         } catch (Exception e) {
             // Catches exceptions related to malformed payloads
             e.printStackTrace();
-            System.out.println("[Components] Data should be on the right format  + " + e.getCause());
+            System.out.println("[Component] Data should be on the right format  + " + e.getCause());
         }
     }
 
