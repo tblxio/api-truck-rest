@@ -1,9 +1,9 @@
 package dtb.lego.truck.rest.errors;
 
-import dtb.lego.truck.rest.component.events.entity.Component;
-import dtb.lego.truck.rest.component.events.entity.ComponentInfoCollection;
-import dtb.lego.truck.rest.component.events.entity.Transformation;
-import dtb.lego.truck.rest.data.events.acquisition.entity.LegoTruckException;
+import dtb.lego.truck.rest.component.entity.Component;
+import dtb.lego.truck.rest.component.entity.ComponentInfoCollection;
+import dtb.lego.truck.rest.component.entity.Transformation;
+import dtb.lego.truck.rest.events.acquisition.entity.LegoTruckException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 

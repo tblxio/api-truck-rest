@@ -1,6 +1,6 @@
 package dtb.lego.truck.rest.errors;
 
-import dtb.lego.truck.rest.data.events.acquisition.entity.LegoTruckException;
+import dtb.lego.truck.rest.events.acquisition.entity.LegoTruckException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
