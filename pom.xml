@@ -156,14 +156,6 @@
                     <forkCount>0</forkCount>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>com.spotify</groupId>
-                <artifactId>dockerfile-maven-plugin</artifactId>
-                <version>1.4.9</version>
-                <configuration>
-                    <repository>dtb/lego-rest</repository>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 
