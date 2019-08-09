@@ -1,20 +1,25 @@
 package dtb.lego.truck.rest.errors;
 
+import dtb.lego.truck.rest.component.events.entity.Component;
 import dtb.lego.truck.rest.component.events.entity.ComponentInfoCollection;
-import dtb.lego.truck.rest.component.events.entity.Components;
-import dtb.lego.truck.rest.component.events.entity.Transformations;
+import dtb.lego.truck.rest.component.events.entity.Transformation;
 import dtb.lego.truck.rest.data.events.acquisition.entity.LegoTruckException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 @Controller
 public class InputValidator {
+
+    private ComponentInfoCollection componentInfoCollection;
+
     @Autowired
-    ComponentInfoCollection componentInfoCollection;
+    public InputValidator(ComponentInfoCollection componentInfoCollection) {
+        this.componentInfoCollection = componentInfoCollection;
+    }
 
     public void checkValidComponent(String requestedComponent) {
         try {
-            Components.valueOf(requestedComponent.toUpperCase());
+            Component.valueOf(requestedComponent.toUpperCase());
         } catch (IllegalArgumentException e) {
             throw new LegoTruckException(Errors.INVALID_PARAMETER, requestedComponent);
         }
@@ -22,7 +27,7 @@ public class InputValidator {
 
     public void checkValidTransformation(String requestedTransformation) {
         try {
-            Transformations.valueOf(requestedTransformation.toUpperCase());
+            Transformation.valueOf(requestedTransformation.toUpperCase());
         } catch (IllegalArgumentException e) {
             throw new LegoTruckException(Errors.INVALID_PARAMETER, requestedTransformation);
         }
@@ -37,7 +42,7 @@ public class InputValidator {
     public void checkThatIntervalIsBiggerThanStorageInterval(String fields, long interval) {
         String[] components = fields.split("-");
         for (String component : components) {
-            double componentInterval = componentInfoCollection.getComponentInfo(Components.valueOf(component.toUpperCase())).getSamplingInterval();
+            double componentInterval = componentInfoCollection.getComponentInfo(Component.valueOf(component.toUpperCase())).getSamplingInterval();
             if (interval / 1000.0 < componentInterval) {
                 throw new LegoTruckException(Errors.INVALID_PARAMETER, "interval requested is smaller than acquisition interval");
             }
@@ -54,9 +59,9 @@ public class InputValidator {
     }
 
     public void checkValidComponentTransformationPair(String requestedComponent, String transformation) {
-        Transformations transform = Transformations.valueOf(transformation.toUpperCase());
-        Components component = Components.valueOf(requestedComponent.toUpperCase());
-        if (component == Components.MOTOR || component == Components.PROXIMITY && transform != Transformations.LAST)
+        Transformation transform = Transformation.valueOf(transformation.toUpperCase());
+        Component component = Component.valueOf(requestedComponent.toUpperCase());
+        if (component == Component.MOTOR || component == Component.PROXIMITY && transform != Transformation.LAST)
             throw new LegoTruckException(Errors.RESOURCE_NOT_FOUND, requestedComponent, transformation);
     }
 
