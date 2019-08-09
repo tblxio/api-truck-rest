@@ -1,13 +1,13 @@
 package io.techhublisbon.lego.truck.rest.events.acquisition.entity;
 
-import io.techhublisbon.lego.truck.rest.component.entity.ComponentInfo;
-import io.techhublisbon.lego.truck.rest.component.entity.ComponentInfoCollection;
-import io.techhublisbon.lego.truck.rest.component.entity.events.MotorControllerEvent;
-import io.techhublisbon.lego.truck.rest.component.entity.events.ProximitySensorEvent;
-import io.techhublisbon.lego.truck.rest.component.entity.events.xyz.sensor.AccelerometerEvent;
-import io.techhublisbon.lego.truck.rest.component.entity.events.xyz.sensor.GyroscopeEvent;
-import io.techhublisbon.lego.truck.rest.events.acquisition.control.DatabaseHandler;
+import io.techhublisbon.lego.truck.rest.components.entity.ComponentInfo;
+import io.techhublisbon.lego.truck.rest.components.entity.ComponentInfoCollection;
+import io.techhublisbon.lego.truck.rest.components.entity.events.MotorControllerEvent;
+import io.techhublisbon.lego.truck.rest.components.entity.events.ProximitySensorEvent;
+import io.techhublisbon.lego.truck.rest.components.entity.events.xyz.sensor.AccelerometerEvent;
+import io.techhublisbon.lego.truck.rest.components.entity.events.xyz.sensor.GyroscopeEvent;
 import io.techhublisbon.lego.truck.rest.errors.Errors;
+import io.techhublisbon.lego.truck.rest.events.acquisition.control.DatabaseHandler;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -70,7 +70,7 @@ public class MqttDataCallback implements MqttCallback {
     private void handleComponentsMessage(MqttMessage message) {
         try {
             JSONObject msg = new JSONObject(message.toString());
-            // Save component and sample rate on the Collection
+            // Save components and sample rate on the Collection
             if (myComponents.getComponentInfos() == null) System.out.println("nill");
             if (msg.get("name").equals("imu")) {
                 myComponents.getComponentInfos().add(new ComponentInfo("gyroscope", msg.get("pollRate")));

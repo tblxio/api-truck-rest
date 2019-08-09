@@ -1,12 +1,12 @@
-package io.techhublisbon.lego.truck.rest.component.boundary;
+package io.techhublisbon.lego.truck.rest.components.boundary;
 
-import io.techhublisbon.lego.truck.rest.component.entity.Component;
-import io.techhublisbon.lego.truck.rest.component.entity.ComponentInfo;
-import io.techhublisbon.lego.truck.rest.component.entity.Transformation;
-import io.techhublisbon.lego.truck.rest.events.acquisition.control.EventDataHandler;
-import io.techhublisbon.lego.truck.rest.errors.InputValidator;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.techhublisbon.lego.truck.rest.components.entity.Component;
+import io.techhublisbon.lego.truck.rest.components.entity.ComponentInfo;
+import io.techhublisbon.lego.truck.rest.components.entity.Transformation;
+import io.techhublisbon.lego.truck.rest.errors.InputValidator;
+import io.techhublisbon.lego.truck.rest.events.acquisition.control.EventDataHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,7 +34,7 @@ public class ComponentsResource {
                 .body(components);
     }
 
-    @ApiOperation(value = "Returns the information of the requested component")
+    @ApiOperation(value = "Returns the information of the requested components")
     @GetMapping("/components/{component}")
     public ResponseEntity<ComponentInfo> getComponentInfo(@PathVariable String component) {
         inputValidator.checkValidComponent(component);

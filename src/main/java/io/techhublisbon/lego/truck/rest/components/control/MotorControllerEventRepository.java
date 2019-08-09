@@ -1,6 +1,6 @@
-package io.techhublisbon.lego.truck.rest.component.control;
+package io.techhublisbon.lego.truck.rest.components.control;
 
-import io.techhublisbon.lego.truck.rest.component.entity.events.MotorControllerEvent;
+import io.techhublisbon.lego.truck.rest.components.entity.events.MotorControllerEvent;
 
 import javax.transaction.Transactional;
 

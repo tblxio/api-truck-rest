@@ -1,8 +1,8 @@
 package io.techhublisbon.lego.truck.rest.events.acquisition.control;
 
-import io.techhublisbon.lego.truck.rest.component.entity.events.Event;
-import io.techhublisbon.lego.truck.rest.events.acquisition.entity.LegoTruckException;
+import io.techhublisbon.lego.truck.rest.components.entity.events.Event;
 import io.techhublisbon.lego.truck.rest.errors.Errors;
+import io.techhublisbon.lego.truck.rest.events.acquisition.entity.LegoTruckException;
 import io.techhublisbon.lego.truck.rest.motor.control.control.MotorDriveHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -41,7 +41,6 @@ public class EventStreamingHandler {
         this.subscriptions = new ConcurrentHashMap<>();
         this.eventDataHandler = eventDataHandler;
     }
-
 
 
     /**
@@ -83,7 +82,7 @@ public class EventStreamingHandler {
         while (true) {
             // If the client disconnects his sessionId is removed, so the loop should stop
             if (!this.subscriptions.containsKey(sessionId)) break;
-            // Send the last data from each component
+            // Send the last data from each components
             try {
                 for (String component : components) {
                     Event ne = eventDataHandler.getTransformedEvent(interval, component, transformation);

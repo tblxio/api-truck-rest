@@ -1,6 +1,6 @@
-package io.techhublisbon.lego.truck.rest.component.control;
+package io.techhublisbon.lego.truck.rest.components.control;
 
-import io.techhublisbon.lego.truck.rest.component.entity.events.Event;
+import io.techhublisbon.lego.truck.rest.components.entity.events.Event;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;

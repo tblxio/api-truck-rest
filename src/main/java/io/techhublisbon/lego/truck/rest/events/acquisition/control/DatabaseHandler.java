@@ -1,17 +1,17 @@
 package io.techhublisbon.lego.truck.rest.events.acquisition.control;
 
-import io.techhublisbon.lego.truck.rest.component.entity.Component;
-import io.techhublisbon.lego.truck.rest.component.entity.events.MotorControllerEvent;
-import io.techhublisbon.lego.truck.rest.component.entity.events.ProximitySensorEvent;
-import io.techhublisbon.lego.truck.rest.component.entity.events.xyz.sensor.AccelerometerEvent;
-import io.techhublisbon.lego.truck.rest.component.entity.events.xyz.sensor.GyroscopeEvent;
-import io.techhublisbon.lego.truck.rest.component.entity.events.xyz.sensor.XYZSensorEvent;
-import io.techhublisbon.lego.truck.rest.component.control.AccelerometerEventRepository;
-import io.techhublisbon.lego.truck.rest.component.control.GyroscopeEventRepository;
-import io.techhublisbon.lego.truck.rest.component.control.MotorControllerEventRepository;
-import io.techhublisbon.lego.truck.rest.component.control.ProximitySensorEventRepository;
-import io.techhublisbon.lego.truck.rest.events.acquisition.entity.LegoTruckException;
+import io.techhublisbon.lego.truck.rest.components.control.AccelerometerEventRepository;
+import io.techhublisbon.lego.truck.rest.components.control.GyroscopeEventRepository;
+import io.techhublisbon.lego.truck.rest.components.control.MotorControllerEventRepository;
+import io.techhublisbon.lego.truck.rest.components.control.ProximitySensorEventRepository;
+import io.techhublisbon.lego.truck.rest.components.entity.Component;
+import io.techhublisbon.lego.truck.rest.components.entity.events.MotorControllerEvent;
+import io.techhublisbon.lego.truck.rest.components.entity.events.ProximitySensorEvent;
+import io.techhublisbon.lego.truck.rest.components.entity.events.xyz.sensor.AccelerometerEvent;
+import io.techhublisbon.lego.truck.rest.components.entity.events.xyz.sensor.GyroscopeEvent;
+import io.techhublisbon.lego.truck.rest.components.entity.events.xyz.sensor.XYZSensorEvent;
 import io.techhublisbon.lego.truck.rest.errors.Errors;
+import io.techhublisbon.lego.truck.rest.events.acquisition.entity.LegoTruckException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;

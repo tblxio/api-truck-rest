@@ -1,14 +1,14 @@
 package io.techhublisbon.lego.truck.rest.events.acquisition.control;
 
 import io.techhublisbon.lego.truck.rest.MqttHandler;
-import io.techhublisbon.lego.truck.rest.component.entity.Component;
-import io.techhublisbon.lego.truck.rest.component.entity.ComponentInfo;
-import io.techhublisbon.lego.truck.rest.component.entity.ComponentInfoCollection;
-import io.techhublisbon.lego.truck.rest.component.entity.Transformation;
-import io.techhublisbon.lego.truck.rest.component.entity.events.Event;
+import io.techhublisbon.lego.truck.rest.components.entity.Component;
+import io.techhublisbon.lego.truck.rest.components.entity.ComponentInfo;
+import io.techhublisbon.lego.truck.rest.components.entity.ComponentInfoCollection;
+import io.techhublisbon.lego.truck.rest.components.entity.Transformation;
+import io.techhublisbon.lego.truck.rest.components.entity.events.Event;
+import io.techhublisbon.lego.truck.rest.errors.Errors;
 import io.techhublisbon.lego.truck.rest.events.acquisition.entity.LegoTruckException;
 import io.techhublisbon.lego.truck.rest.events.acquisition.entity.MqttDataCallback;
-import io.techhublisbon.lego.truck.rest.errors.Errors;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
@@ -59,7 +59,7 @@ public class EventDataHandler {
      *
      * @param interval  The interval to perform the transformation on the data, starting in the current timestamp and
      *                  going back
-     * @param comp      The component requested (motor,gyroscope,etc..)
+     * @param comp      The components requested (motor,gyroscope,etc..)
      * @param transform The transformation to be applied to downsample the data
      */
     public Event getTransformedEvent(long interval, String comp, String transform) throws IllegalArgumentException, LegoTruckException {
@@ -89,9 +89,9 @@ public class EventDataHandler {
     }
 
     /**
-     * Returns the the last event from the component
+     * Returns the the last event from the components
      *
-     * @param component The component requested (motor,gyroscope,etc..)
+     * @param component The components requested (motor,gyroscope,etc..)
      */
     private Event getLastEvent(Component component) {
         if (component == Component.MOTOR) return databaseHandler.getLastMotorControllerEvent();
@@ -100,36 +100,36 @@ public class EventDataHandler {
     }
 
     /**
-     * Returns the the avg value event from the component in the last X time units
+     * Returns the the avg value event from the components in the last X time units
      *
-     * @param component The component requested (motor,gyroscope,etc..)
+     * @param component The components requested (motor,gyroscope,etc..)
      */
     private Event meanEvent(long interval, Component component) {
         return databaseHandler.getXYZSensorMeanEventInLastInterval(interval, component);
     }
 
     /**
-     * Returns the the max value event from the component in the last X time units
+     * Returns the the max value event from the components in the last X time units
      *
-     * @param component The component requested (motor,gyroscope,etc..)
+     * @param component The components requested (motor,gyroscope,etc..)
      */
     private Event maxEvent(long interval, Component component) {
         return databaseHandler.getXYZSensorMaxEventInLastInterval(interval, component);
     }
 
     /**
-     * Returns the the min value event from the component in the last X time units
+     * Returns the the min value event from the components in the last X time units
      *
-     * @param component The component requested (motor,gyroscope,etc..)
+     * @param component The components requested (motor,gyroscope,etc..)
      */
     private Event minEvent(long interval, Component component) {
         return databaseHandler.getXYZSensorMinEventInLastInterval(interval, component);
     }
 
     /**
-     * Returns the the information of the requested component
+     * Returns the the information of the requested components
      *
-     * @param component The component requested (motor,gyroscope,etc..)
+     * @param component The components requested (motor,gyroscope,etc..)
      */
     public ComponentInfo getComponentInfo(Component component) {
         return componentInfo.getComponentInfo(component);
@@ -140,7 +140,7 @@ public class EventDataHandler {
      *
      * @param begin     The beginning of the interval
      * @param end       The end of the interval
-     * @param component The component requested (motor,gyroscope,etc..)
+     * @param component The components requested (motor,gyroscope,etc..)
      */
     public Collection<? extends Event> getEventsInInterval(String component, long begin, long end) {
         Component component1 = Component.valueOf(component.toUpperCase());
@@ -158,11 +158,11 @@ public class EventDataHandler {
     }
 
     /**
-     * Delete the events from a given component in a given interval
+     * Delete the events from a given components in a given interval
      *
      * @param begin     The beginning of the interval
      * @param end       The end of the interval
-     * @param component The component requested (motor,gyroscope,etc..)
+     * @param component The components requested (motor,gyroscope,etc..)
      */
     public void deleteEventsInInterval(String component, long begin, long end) {
         Component component1 = Component.valueOf(component.toUpperCase());
@@ -175,7 +175,7 @@ public class EventDataHandler {
      *
      * @param sampleInterval The interval to perform the transformation on the data, starting in the current timestamp and
      *                       going back
-     * @param comp           The component requested (motor,gyroscope,etc..)
+     * @param comp           The components requested (motor,gyroscope,etc..)
      * @param transform      The transformation to be applied to downsample the data
      * @param begin          The beginning of the interval
      * @param end            The end of the interval

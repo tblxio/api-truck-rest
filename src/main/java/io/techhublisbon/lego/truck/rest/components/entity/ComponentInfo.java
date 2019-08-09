@@ -1,10 +1,10 @@
-package io.techhublisbon.lego.truck.rest.component.entity;
+package io.techhublisbon.lego.truck.rest.components.entity;
 
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Represents one component's information.
+ * Represents one components's information.
  * It contains it's name and the rate in which the data is acquired from the sensor.
  */
 @Getter

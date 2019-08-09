@@ -1,10 +1,10 @@
 package io.techhublisbon.lego.truck.rest.events.acquisition.boundary;
 
-import io.techhublisbon.lego.truck.rest.component.entity.events.Event;
-import io.techhublisbon.lego.truck.rest.events.acquisition.control.EventDataHandler;
-import io.techhublisbon.lego.truck.rest.errors.InputValidator;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.techhublisbon.lego.truck.rest.components.entity.events.Event;
+import io.techhublisbon.lego.truck.rest.errors.InputValidator;
+import io.techhublisbon.lego.truck.rest.events.acquisition.control.EventDataHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +29,7 @@ public class EventHistoryResource {
         this.inputValidator = inputValidator;
     }
 
-    @ApiOperation(value = "Get all the events from the component contained in the requested interval." +
+    @ApiOperation(value = "Get all the events from the components contained in the requested interval." +
             "Set 0 on end to use the current time instead")
     @GetMapping("/events/history")
     public ResponseEntity<Collection<? extends Event>> getComponentEventHistoryInInterval(@RequestParam String component,
@@ -46,7 +46,7 @@ public class EventHistoryResource {
     }
 
     //2019-08-06T13:55:31.016+01:00
-    @ApiOperation(value = "Get all the events from the component contained in the requested interval, with the sampling rate requested" +
+    @ApiOperation(value = "Get all the events from the components contained in the requested interval, with the sampling rate requested" +
             " and applying the required transformation")
     @GetMapping("/events/history/transformed")
     public ResponseEntity<Collection<? extends Event>> getTransformedComponentEventHistoryInInterval(@RequestParam String component,

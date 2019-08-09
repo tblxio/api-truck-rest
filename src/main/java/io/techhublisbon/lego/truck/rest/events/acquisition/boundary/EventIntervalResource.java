@@ -1,12 +1,12 @@
 package io.techhublisbon.lego.truck.rest.events.acquisition.boundary;
 
-import io.techhublisbon.lego.truck.rest.component.entity.events.Event;
-import io.techhublisbon.lego.truck.rest.events.acquisition.control.EventDataHandler;
-import io.techhublisbon.lego.truck.rest.errors.InputValidator;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import io.techhublisbon.lego.truck.rest.components.entity.events.Event;
+import io.techhublisbon.lego.truck.rest.errors.InputValidator;
+import io.techhublisbon.lego.truck.rest.events.acquisition.control.EventDataHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +26,7 @@ public class EventIntervalResource {
         this.inputValidator = inputValidator;
     }
 
-    @ApiOperation(value = "Returns the last value acquired from the requested component", response = Event.class)
+    @ApiOperation(value = "Returns the last value acquired from the requested components", response = Event.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Ok", response = Event.class)
     })

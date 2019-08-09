@@ -1,7 +1,7 @@
-package io.techhublisbon.lego.truck.rest.component.entity;
+package io.techhublisbon.lego.truck.rest.components.entity;
 
-import io.techhublisbon.lego.truck.rest.events.acquisition.entity.LegoTruckException;
 import io.techhublisbon.lego.truck.rest.errors.Errors;
+import io.techhublisbon.lego.truck.rest.events.acquisition.entity.LegoTruckException;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,10 +24,10 @@ public class ComponentInfoCollection {
     }
 
     /**
-     * Returns the information regarding a single component from the collection. This might not be the ideal way to
+     * Returns the information regarding a single components from the collection. This might not be the ideal way to
      * search through the CopyOnArrayList collection, but it works quite fast for this size of array.
      *
-     * @param component The requested component.
+     * @param component The requested components.
      */
     public ComponentInfo getComponentInfo(Component component) {
         List<ComponentInfo> components = componentInfos.stream().filter(item -> item.getName().equals(component)).

@@ -1,8 +1,8 @@
 package io.techhublisbon.lego.truck.rest.motor.control.boundary;
 
-import io.techhublisbon.lego.truck.rest.motor.control.control.MotorDriveHandler;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.techhublisbon.lego.truck.rest.motor.control.control.MotorDriveHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

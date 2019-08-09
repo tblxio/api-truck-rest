@@ -1,8 +1,8 @@
 package io.techhublisbon.lego.truck.rest.errors;
 
-import io.techhublisbon.lego.truck.rest.component.entity.Component;
-import io.techhublisbon.lego.truck.rest.component.entity.ComponentInfoCollection;
-import io.techhublisbon.lego.truck.rest.component.entity.Transformation;
+import io.techhublisbon.lego.truck.rest.components.entity.Component;
+import io.techhublisbon.lego.truck.rest.components.entity.ComponentInfoCollection;
+import io.techhublisbon.lego.truck.rest.components.entity.Transformation;
 import io.techhublisbon.lego.truck.rest.events.acquisition.entity.LegoTruckException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

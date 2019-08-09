@@ -1,6 +1,6 @@
-package io.techhublisbon.lego.truck.rest.component.entity.events;
+package io.techhublisbon.lego.truck.rest.components.entity.events;
 
-import io.techhublisbon.lego.truck.rest.component.entity.Component;
+import io.techhublisbon.lego.truck.rest.components.entity.Component;
 import org.springframework.data.repository.NoRepositoryBean;
 
 import javax.persistence.Id;

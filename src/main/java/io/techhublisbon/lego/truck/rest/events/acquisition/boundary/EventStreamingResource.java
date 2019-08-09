@@ -1,10 +1,10 @@
 package io.techhublisbon.lego.truck.rest.events.acquisition.boundary;
 
-import io.techhublisbon.lego.truck.rest.events.acquisition.control.EventStreamingHandler;
-import io.techhublisbon.lego.truck.rest.errors.InputValidator;
-import io.techhublisbon.lego.truck.rest.settings.control.WebSocketConfig;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.techhublisbon.lego.truck.rest.errors.InputValidator;
+import io.techhublisbon.lego.truck.rest.events.acquisition.control.EventStreamingHandler;
+import io.techhublisbon.lego.truck.rest.settings.control.WebSocketConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

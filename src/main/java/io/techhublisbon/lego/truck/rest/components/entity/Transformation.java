@@ -1,4 +1,4 @@
-package io.techhublisbon.lego.truck.rest.component.entity;
+package io.techhublisbon.lego.truck.rest.components.entity;
 
 /**
  * Contains the implemented transformations available to downsample the data

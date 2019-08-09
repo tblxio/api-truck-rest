@@ -1,6 +1,6 @@
-package io.techhublisbon.lego.truck.rest.component.control;
+package io.techhublisbon.lego.truck.rest.components.control;
 
-import io.techhublisbon.lego.truck.rest.component.entity.events.ProximitySensorEvent;
+import io.techhublisbon.lego.truck.rest.components.entity.events.ProximitySensorEvent;
 
 import javax.transaction.Transactional;
 

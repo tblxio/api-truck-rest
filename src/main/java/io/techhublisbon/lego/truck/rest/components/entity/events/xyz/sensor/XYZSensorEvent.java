@@ -1,7 +1,7 @@
-package io.techhublisbon.lego.truck.rest.component.entity.events.xyz.sensor;
+package io.techhublisbon.lego.truck.rest.components.entity.events.xyz.sensor;
 
-import io.techhublisbon.lego.truck.rest.component.entity.Component;
-import io.techhublisbon.lego.truck.rest.component.entity.events.Event;
+import io.techhublisbon.lego.truck.rest.components.entity.Component;
+import io.techhublisbon.lego.truck.rest.components.entity.events.Event;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONObject;

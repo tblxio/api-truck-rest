@@ -1,4 +1,4 @@
-package io.techhublisbon.lego.truck.rest.component.entity;
+package io.techhublisbon.lego.truck.rest.components.entity;
 
 /**
  * Used to define the types of Component available.
