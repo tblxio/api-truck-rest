@@ -15,13 +15,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Api(description = "Operations pertaining the acquisition of information about the components in the system")
-public class ComponentsController {
+public class ComponentsResource {
+
+    private InputValidator inputValidator;
+    private SensorDataHandler sensorDataHandler;
 
     @Autowired
-    InputValidator inputValidator;
-
-    @Autowired
-    SensorDataHandler sensorDataHandler;
+    public ComponentsResource(InputValidator inputValidator, SensorDataHandler sensorDataHandler) {
+        this.inputValidator = inputValidator;
+        this.sensorDataHandler = sensorDataHandler;
+    }
 
     @ApiOperation(value = "Returns the components registered in the system")
     @GetMapping("/components")
