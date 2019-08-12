@@ -7,5 +7,6 @@ public enum Component {
     ACCELEROMETER,
     GYROSCOPE,
     MOTOR,
-    PROXIMITY
+    PROXIMITY,
+    CAMERA
 }

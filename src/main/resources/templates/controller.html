@@ -101,19 +101,6 @@
     <span id="gyroscopemean"></span>
     <br>
     <br>
-    <b>Accelerometer Streams:</b>
-    <br>
-    <span id="accelerometersampling"></span>
-    <br>
-    <span id="accelerometermax"></span>
-    <br>
-    <span id="accelerometermin"></span>
-    <br>
-    <span id="accelerometerlast"></span>
-    <br>
-    <span id="accelerometermean"></span>
-    <br>
-    <br>
     <b>Proximity Sensor Stream:</b>
     <br>
     <span id="proximitylast"></span>
@@ -121,6 +108,7 @@
 </div>
 
 <div align="center" id="logo">
+
     <object data="/images/logodark.svg" height="100" th:src="@{/images/logodark.svg}" type="image/svg+xml" width="250">
         Your browser does not support SVG
     </object>
@@ -137,7 +125,7 @@
 </script>
 <script>
     console.log("touchscreen is", VirtualJoystick.touchScreenAvailable() ? "available" : "not available");
-    var URL = "http://0.0.0.0:8080";
+    var URL = "http://192.168.1.126:8080";
     var maxStickValue = 200;
 
     var joystick = new VirtualJoystick({
@@ -175,15 +163,10 @@
     get_components();
     get_transformations();
     get_sampling('gyroscope');
-    get_sampling('accelerometer');
     connectStream('gyroscope', 'last', 3000);
     connectStream('gyroscope', 'mean', 5000);
     connectStream('gyroscope', 'min', 10000);
     connectStream('gyroscope', 'max', 2000);
-    connectStream('accelerometer', 'last', 1000);
-    connectStream('accelerometer', 'mean', 7000);
-    connectStream('accelerometer', 'min', 7500);
-    connectStream('accelerometer', 'max', 10000);
     connectStream('proximity', 'last', 1000);
     get_adc();
 
@@ -259,7 +242,7 @@
                 outputEl.innerHTML = '<b>Controller State:</b> ' + ' no data yet';
             }
 
-            console.log(data)
+
         });
 
     }
@@ -277,7 +260,7 @@
             } catch (err) {
                 outputEl.innerHTML = '<b>Controller State:</b> ' + ' no data yet';
             }
-            console.log(data)
+
         });
     }
 
@@ -294,7 +277,7 @@
             } catch (err) {
                 outputEl.innerHTML = '<b>Controller State:</b> ' + ' no data yet';
             }
-            console.log(data)
+
         });
     }
 
@@ -309,7 +292,7 @@
             } catch (err) {
                 outputEl.innerHTML = '<b>Real Sampling Rate :</b> ' + 'no data yet';
             }
-            console.log(data)
+
         });
     }
 
@@ -322,7 +305,6 @@
         var outputEl = document.getElementById(component + transformation);
         $.get(endpoint, function (data, status) {
             topicWs = data;
-            console.log(topicWs);
             mystompClient.connect({}, function (frame) {
                 //setConnected(true);
                 mystompClient.subscribe(topicWs, function (data) {
@@ -349,6 +331,16 @@
             });
         });
 
+    }
+
+    function getVideo() {
+        var endpoint = URL + "/video";
+        var outputEl = document.getElementById("myVideo");
+        $.get(endpoint, function (data, status) {
+            outputEl.src = "http://" + data + "/index.html";
+            console.log(data);
+            console.log(outputEl.src);
+        });
     }
 
     function changeInterval(value, in_min, in_max, out_min, out_max) {

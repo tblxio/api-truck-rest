@@ -3,7 +3,6 @@ package io.techhublisbon.lego.truck.rest.events.acquisition.control;
 import io.techhublisbon.lego.truck.rest.components.entity.events.Event;
 import io.techhublisbon.lego.truck.rest.errors.Errors;
 import io.techhublisbon.lego.truck.rest.events.acquisition.entity.LegoTruckException;
-import io.techhublisbon.lego.truck.rest.motor.control.control.MotorDriveHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.core.MessageSendingOperations;
@@ -25,7 +24,6 @@ import java.util.concurrent.ConcurrentMap;
 public class EventStreamingHandler {
 
     private final MessageSendingOperations<String> messagingTemplate;
-    private MotorDriveHandler motorDriveHandler;
     /**
      * Used to save the information on the subscribed clients in order to stop streaming when they disconnect from the
      * requested stream, since every requested stream is given a unique destination and session ID. It is concurrent
@@ -35,9 +33,8 @@ public class EventStreamingHandler {
     private EventDataHandler eventDataHandler;
 
     @Autowired
-    public EventStreamingHandler(MessageSendingOperations<String> messagingTemplate, MotorDriveHandler motorDriveHandler, EventDataHandler eventDataHandler) {
+    public EventStreamingHandler(MessageSendingOperations<String> messagingTemplate, EventDataHandler eventDataHandler) {
         this.messagingTemplate = messagingTemplate;
-        this.motorDriveHandler = motorDriveHandler;
         this.subscriptions = new ConcurrentHashMap<>();
         this.eventDataHandler = eventDataHandler;
     }
@@ -79,9 +76,8 @@ public class EventStreamingHandler {
     public void streamer(String sessionId, String destination, int interval, String fields, String transformation) {
         // Get different components from request
         String[] components = fields.split("-");
-        while (true) {
+        while (this.subscriptions.containsKey(sessionId)) {
             // If the client disconnects his sessionId is removed, so the loop should stop
-            if (!this.subscriptions.containsKey(sessionId)) break;
             // Send the last data from each components
             try {
                 for (String component : components) {

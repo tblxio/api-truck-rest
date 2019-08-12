@@ -9,6 +9,7 @@ import io.techhublisbon.lego.truck.rest.components.entity.events.Event;
 import io.techhublisbon.lego.truck.rest.errors.Errors;
 import io.techhublisbon.lego.truck.rest.events.acquisition.entity.LegoTruckException;
 import io.techhublisbon.lego.truck.rest.events.acquisition.entity.MqttDataCallback;
+import lombok.Getter;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
@@ -22,8 +23,8 @@ import java.util.Collection;
  */
 @org.springframework.stereotype.Component
 @DependsOn("MqttHandler")
+@Getter
 public class EventDataHandler {
-
 
     private MqttHandler myMqttHandler;
 
@@ -57,35 +58,35 @@ public class EventDataHandler {
      * Returns the requested event data, applying the requested transformation over the data in interval specified.
      * Used for operations over the last X time units.
      *
-     * @param interval  The interval to perform the transformation on the data, starting in the current timestamp and
-     *                  going back
-     * @param comp      The components requested (motor,gyroscope,etc..)
-     * @param transform The transformation to be applied to downsample the data
+     * @param interval             The interval to perform the transformation on the data, starting in the current timestamp and
+     *                             going back
+     * @param componentString      The components requested (motor,gyroscope,etc..)
+     * @param transformationString The transformation to be applied to downsample the data
      */
-    public Event getTransformedEvent(long interval, String comp, String transform) throws IllegalArgumentException, LegoTruckException {
+    public Event getTransformedEvent(long interval, String componentString, String transformationString) {
         try {
-            Component component = Component.valueOf(comp.toUpperCase());
-            Transformation transformation = Transformation.valueOf(transform.toUpperCase());
+            Component component = Component.valueOf(componentString.toUpperCase());
+            Transformation transformation = Transformation.valueOf(transformationString.toUpperCase());
             switch (transformation) {
                 case MAX:
                     if (component == Component.MOTOR || component == Component.PROXIMITY)
-                        throw new LegoTruckException(Errors.RESOURCE_NOT_FOUND, transformation, "Only last allowed");
+                        break;
                     return maxEvent(interval, component);
                 case MEAN:
                     if (component == Component.MOTOR || component == Component.PROXIMITY)
-                        throw new LegoTruckException(Errors.RESOURCE_NOT_FOUND, transformation, "Only last allowed");
+                        break;
                     return meanEvent(interval, component);
                 case MIN:
                     if (component == Component.MOTOR || component == Component.PROXIMITY)
-                        throw new LegoTruckException(Errors.RESOURCE_NOT_FOUND, transformation, "Only last allowed");
+                        break;
                     return minEvent(interval, component);
                 case LAST:
                     return getLastEvent(component);
             }
         } catch (NullPointerException np) {
-            throw new LegoTruckException(Errors.RESOURCE_EMPTY, comp, transform);
+            throw new LegoTruckException(Errors.RESOURCE_EMPTY, componentString, transformationString);
         }
-        throw new LegoTruckException(Errors.INVALID_PARAMETER);
+        throw new LegoTruckException(Errors.INVALID_PARAMETER, transformationString);
     }
 
     /**
@@ -186,7 +187,7 @@ public class EventDataHandler {
             Component component = Component.valueOf(comp.toUpperCase());
 
             if (component == Component.MOTOR)
-                throw new LegoTruckException(Errors.RESOURCE_NOT_FOUND, "Historic Transformation not implemented for the motor");
+                throw new LegoTruckException(Errors.RESOURCE_NOT_FOUND, component, transform);
             Transformation transformation = Transformation.valueOf(transform.toUpperCase());
 
             switch (transformation) {

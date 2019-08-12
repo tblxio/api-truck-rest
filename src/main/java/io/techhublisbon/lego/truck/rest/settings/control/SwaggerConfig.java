@@ -19,7 +19,7 @@ public class SwaggerConfig {
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("dtb.lego.truck.rest"))
+                .apis(RequestHandlerSelectors.basePackage("io.techhublisbon.lego.truck.rest"))
                 .paths(PathSelectors.any())
                 .build()
                 .apiInfo(new ApiInfo(

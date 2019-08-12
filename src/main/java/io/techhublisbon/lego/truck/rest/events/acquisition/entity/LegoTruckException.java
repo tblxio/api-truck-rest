@@ -15,9 +15,9 @@ public class LegoTruckException extends RuntimeException {
         this.messageParameters = messageParameters.clone();
     }
 
-    public LegoTruckException(final Throwable cause, final Errors edfError, final Object... messageParameters) {
-        super(getErrorMessage(edfError, messageParameters), cause);
-        this.myError = edfError;
+    public LegoTruckException(final Throwable cause, final Errors error, final Object... messageParameters) {
+        super(getErrorMessage(error, messageParameters), cause);
+        this.myError = error;
         this.messageParameters = messageParameters.clone();
     }
 

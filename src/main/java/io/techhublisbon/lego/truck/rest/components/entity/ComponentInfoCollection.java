@@ -17,7 +17,8 @@ import java.util.stream.Collectors;
 @Setter
 @org.springframework.stereotype.Component
 public class ComponentInfoCollection {
-    CopyOnWriteArrayList<ComponentInfo> componentInfos;
+    private CopyOnWriteArrayList<ComponentInfo> componentInfos;
+    private VideoStream videoStream;
 
     public ComponentInfoCollection() {
         this.componentInfos = new CopyOnWriteArrayList<>();
@@ -33,6 +34,12 @@ public class ComponentInfoCollection {
         List<ComponentInfo> components = componentInfos.stream().filter(item -> item.getName().equals(component)).
                 collect(Collectors.toList());
         if (components.isEmpty()) throw new LegoTruckException(Errors.RESOURCE_EMPTY, component, "disconnected");
-        return components.get(0);
+        else
+            return components.get(0);
+    }
+
+    public VideoStream getVideoStream() {
+        if (videoStream == null) throw new LegoTruckException(Errors.RESOURCE_NOT_FOUND, Component.CAMERA);
+        return videoStream;
     }
 }

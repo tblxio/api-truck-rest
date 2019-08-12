@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.util.Objects;
 
 /**
  * Represents an data acquisition event from the SBrick,
@@ -44,5 +45,19 @@ public class ProximitySensorEvent extends Event {
                 ", name=" + name +
                 ", timestamp=" + timestamp +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ProximitySensorEvent)) return false;
+        ProximitySensorEvent that = (ProximitySensorEvent) o;
+        return Double.compare(that.getDistance(), getDistance()) == 0 &&
+                getName() == that.getName();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getDistance(), getName());
     }
 }

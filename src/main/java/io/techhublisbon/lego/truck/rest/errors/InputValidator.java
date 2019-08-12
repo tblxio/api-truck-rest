@@ -1,6 +1,7 @@
 package io.techhublisbon.lego.truck.rest.errors;
 
 import io.techhublisbon.lego.truck.rest.components.entity.Component;
+import io.techhublisbon.lego.truck.rest.components.entity.ComponentInfo;
 import io.techhublisbon.lego.truck.rest.components.entity.ComponentInfoCollection;
 import io.techhublisbon.lego.truck.rest.components.entity.Transformation;
 import io.techhublisbon.lego.truck.rest.events.acquisition.entity.LegoTruckException;
@@ -42,8 +43,9 @@ public class InputValidator {
     public void checkThatIntervalIsBiggerThanStorageInterval(String fields, long interval) {
         String[] components = fields.split("-");
         for (String component : components) {
-            double componentInterval = componentInfoCollection.getComponentInfo(Component.valueOf(component.toUpperCase())).getSamplingInterval();
-            if (interval / 1000.0 < componentInterval) {
+            ComponentInfo componentInfo = componentInfoCollection.getComponentInfo(Component.valueOf(component.toUpperCase()));
+            if (componentInfo == null) throw new LegoTruckException(Errors.RESOURCE_EMPTY, component, "info");
+            if (interval / 1000.0 < componentInfo.getSamplingInterval()) {
                 throw new LegoTruckException(Errors.INVALID_PARAMETER, "interval requested is smaller than acquisition interval");
             }
         }
@@ -61,8 +63,8 @@ public class InputValidator {
     public void checkValidComponentTransformationPair(String requestedComponent, String transformation) {
         Transformation transform = Transformation.valueOf(transformation.toUpperCase());
         Component component = Component.valueOf(requestedComponent.toUpperCase());
-        if (component == Component.MOTOR || component == Component.PROXIMITY && transform != Transformation.LAST)
-            throw new LegoTruckException(Errors.RESOURCE_NOT_FOUND, requestedComponent, transformation);
+        if ((component == Component.MOTOR || component == Component.PROXIMITY) && transform != Transformation.LAST)
+            throw new LegoTruckException(Errors.RESOURCE_NOT_FOUND, component, transform);
     }
 
     public void checkBeginTransformedHistoryLessThan1MonthAgo(long begin) {

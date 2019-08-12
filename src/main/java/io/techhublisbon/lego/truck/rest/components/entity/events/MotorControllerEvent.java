@@ -7,6 +7,7 @@ import org.json.JSONObject;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.util.Objects;
 
 /**
  * Represents an data acquisition event from the SBrick,
@@ -67,5 +68,20 @@ public class MotorControllerEvent extends Event {
         }
 
         return payload;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MotorControllerEvent)) return false;
+        MotorControllerEvent that = (MotorControllerEvent) o;
+        return Double.compare(that.getBatVoltage(), getBatVoltage()) == 0 &&
+                Double.compare(that.getTemperature(), getTemperature()) == 0 &&
+                getName() == that.getName();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getBatVoltage(), getTemperature(), getName());
     }
 }

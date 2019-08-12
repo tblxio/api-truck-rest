@@ -2,6 +2,7 @@ package io.techhublisbon.lego.truck.rest.events.acquisition.entity;
 
 import io.techhublisbon.lego.truck.rest.components.entity.ComponentInfo;
 import io.techhublisbon.lego.truck.rest.components.entity.ComponentInfoCollection;
+import io.techhublisbon.lego.truck.rest.components.entity.VideoStream;
 import io.techhublisbon.lego.truck.rest.components.entity.events.MotorControllerEvent;
 import io.techhublisbon.lego.truck.rest.components.entity.events.ProximitySensorEvent;
 import io.techhublisbon.lego.truck.rest.components.entity.events.xyz.sensor.AccelerometerEvent;
@@ -56,6 +57,7 @@ public class MqttDataCallback implements MqttCallback {
         if (componentName.equals("imu")) this.handleImuMessage(message);
         if (componentName.equals("motor")) this.handleMotorMessage(message);
         if (componentName.equals("proximity")) this.handleProximityMessage(message);
+        if (componentName.equals("camera")) this.handleCameraMessage(message);
     }
 
     @Override
@@ -71,7 +73,6 @@ public class MqttDataCallback implements MqttCallback {
         try {
             JSONObject msg = new JSONObject(message.toString());
             // Save components and sample rate on the Collection
-            if (myComponents.getComponentInfos() == null) System.out.println("nill");
             if (msg.get("name").equals("imu")) {
                 myComponents.getComponentInfos().add(new ComponentInfo("gyroscope", msg.get("pollRate")));
                 myComponents.getComponentInfos().add(new ComponentInfo("accelerometer", msg.get("pollRate")));
@@ -141,4 +142,14 @@ public class MqttDataCallback implements MqttCallback {
         }
     }
 
+    private void handleCameraMessage(MqttMessage message) {
+        try {
+            JSONObject msg = new JSONObject(message.toString());
+            String ip = (String) msg.get("stream_ip");
+            String port = (String) msg.get("stream_port");
+            myComponents.setVideoStream(new VideoStream(ip, port));
+        } catch (Exception e) {
+            System.out.println("[Camera] Data should be on the right format  + " + e.getMessage());
+        }
+    }
 }
