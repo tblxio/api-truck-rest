@@ -1,4 +1,4 @@
-package io.techhublisbon.lego.truck.rest.components.entity.events;
+package io.techhublisbon.lego.truck.rest.events.acquisition.entity;
 
 import io.techhublisbon.lego.truck.rest.components.entity.Component;
 import org.springframework.data.repository.NoRepositoryBean;

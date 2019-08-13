@@ -1,11 +1,7 @@
 package io.techhublisbon.lego.truck.rest.errors;
 
 public enum Errors {
-    MISSING_PARAMETER("1000", "Required parameter ''{0}'' is not present", 400),
-    INVALID_PARAMETER("1001", "Invalid request parameter: {0}", 400),
-    RESOURCE_NOT_FOUND("2001", "Requested resource not found ''{0}''::''{1}''.", 404),
-    RESOURCE_EMPTY("2001", "No data found for ''{0}''::''{1}''", 404),
-    INTERNAL_SERVER_ERROR("3000", "Internal server error.", 500);
+    MISSING_PARAMETER("1000", "Required parameter ''{0}'' is not present", 400), INVALID_PARAMETER("1001", "Invalid request parameter: {0}", 400), RESOURCE_NOT_FOUND("2001", "Requested resource not found ''{0}''::''{1}''.", 404), RESOURCE_EMPTY("2001", "No data found for ''{0}''::''{1}''", 404), INTERNAL_SERVER_ERROR("3000", "Internal server error.", 500);
 
     private final String errorCode;
     private final String errorMessageTemplate;
@@ -31,11 +27,7 @@ public enum Errors {
 
     @Override
     public String toString() {
-        return "Error{" +
-                "errorCode='" + errorCode + '\'' +
-                ", errorMessageTemplate='" + errorMessageTemplate + '\'' +
-                ", responseStatusCode=" + responseStatusCode +
-                '}';
+        return "Error{" + "errorCode='" + errorCode + '\'' + ", errorMessageTemplate='" + errorMessageTemplate + '\'' + ", responseStatusCode=" + responseStatusCode + '}';
     }
 
 }

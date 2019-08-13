@@ -9,9 +9,7 @@ public class ErrorResponse {
 
     public ErrorResponse(final String errorCode, final String messageTemplate, final Object... messageParameters) {
         this.errorCode = errorCode;
-        this.errorMessage = messageParameters.length > 0 ?
-                MessageFormat.format(messageTemplate, messageParameters) :
-                messageTemplate;
+        this.errorMessage = messageParameters.length > 0 ? MessageFormat.format(messageTemplate, messageParameters) : messageTemplate;
     }
 
     public String getErrorCode() {
@@ -27,8 +25,7 @@ public class ErrorResponse {
         if (this == o) return true;
         if (!(o instanceof ErrorResponse)) return false;
         ErrorResponse that = (ErrorResponse) o;
-        return Objects.equals(errorCode, that.errorCode) &&
-                Objects.equals(errorMessage, that.errorMessage);
+        return Objects.equals(errorCode, that.errorCode) && Objects.equals(errorMessage, that.errorMessage);
     }
 
     @Override
@@ -38,9 +35,6 @@ public class ErrorResponse {
 
     @Override
     public String toString() {
-        return "ErrorResponse{" +
-                "errorCode='" + errorCode + '\'' +
-                ", errorMessage='" + errorMessage + '\'' +
-                '}';
+        return "ErrorResponse{" + "errorCode='" + errorCode + '\'' + ", errorMessage='" + errorMessage + '\'' + '}';
     }
 }

@@ -4,19 +4,14 @@ import io.techhublisbon.lego.truck.rest.components.entity.Component;
 import io.techhublisbon.lego.truck.rest.components.entity.ComponentInfo;
 import io.techhublisbon.lego.truck.rest.components.entity.ComponentInfoCollection;
 import io.techhublisbon.lego.truck.rest.events.acquisition.entity.LegoTruckException;
-import org.junit.Before;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.concurrent.CopyOnWriteArrayList;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 
 
@@ -103,4 +98,29 @@ class InputValidatorTest {
     void checkValidStreamingComponents() {
         inputValidator.checkValidStreamingComponents("motor", "last");
     }
+
+    @Test
+    void checkValidMotorMotionSuccess() {
+        inputValidator.checkValidMotorMotion("linear");
+    }
+
+    @Test
+    void checkValidMotorMotionInvalidMotion() {
+        assertThrows(LegoTruckException.class, () -> {
+            inputValidator.checkValidMotorMotion("fail");
+        });
+    }
+
+    @Test
+    void checkValidMotorPowerSuccess() {
+        inputValidator.checkValidMotorPower(5);
+    }
+
+    @Test
+    void checkValidMotorPowerInvalidPower() {
+        assertThrows(LegoTruckException.class, () -> {
+            inputValidator.checkValidMotorPower(1000);
+        });
+    }
+
 }

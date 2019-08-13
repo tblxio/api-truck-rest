@@ -1,6 +1,6 @@
 package io.techhublisbon.lego.truck.rest.components.control;
 
-import io.techhublisbon.lego.truck.rest.components.entity.events.xyz.sensor.AccelerometerEvent;
+import io.techhublisbon.lego.truck.rest.events.acquisition.entity.AccelerometerEvent;
 
 import javax.transaction.Transactional;
 

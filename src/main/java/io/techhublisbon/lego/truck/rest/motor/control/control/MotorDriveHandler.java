@@ -62,18 +62,12 @@ public class MotorDriveHandler {
     public void drive(String motion, int power) throws IllegalArgumentException {
         String channel;
         String direction;
-
-        if (!motion.equals("linear") && !motion.equals("angular") || Math.abs(power) > 256) {
-            throw new IllegalArgumentException("Motion should be either linear or angular, your input " + motion + " and the absolute power should be" +
-                    "smaller than 256, your input " + power);
-        }
-
+        power *= 2.55; // Convert from 0-100 to 0-255
         direction = (power >= 0) ? "00" : "01";
         channel = (motion.equals("linear")) ? "02" : "00";
         JSONObject payload = generateDrivePayload(channel, direction, Math.abs(power));
 
         myMqttHandler.publishJson(payload, driveTopic);
-
     }
 
 

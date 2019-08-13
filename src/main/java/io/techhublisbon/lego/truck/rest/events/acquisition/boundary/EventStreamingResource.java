@@ -28,24 +28,20 @@ public class EventStreamingResource {
 
     @ApiOperation(value = "Returns the topic of the websocket with the request event stream")
     @GetMapping("/events/stream/{interval}/{fields}/{transformation}")
-    public ResponseEntity<String> getStreamPath(@PathVariable int interval,
-                                                @PathVariable String fields,
-                                                @PathVariable String transformation) {
+    public ResponseEntity<String> getStreamPath(@PathVariable int interval, @PathVariable String fields, @PathVariable String transformation) {
 
         inputValidator.checkValidStreamingComponents(fields, transformation);
         inputValidator.checkValidTransformation(transformation);
         inputValidator.checkThatIntervalIsBiggerThanStorageInterval(fields, interval);
         String streamString = eventStreamingHandler.getStream(interval, fields, transformation);
-        return ResponseEntity.ok()
-                .body(streamString);
+        return ResponseEntity.ok().body(streamString);
     }
 
     @ApiOperation(value = "Returns the endpoint of the websocket handler, to start the connection")
     @GetMapping("/events/stream")
     public ResponseEntity<String> getWebSocketEndpoint() {
         String endpoint = config.getEndpoint();
-        return ResponseEntity.ok()
-                .body(endpoint);
+        return ResponseEntity.ok().body(endpoint);
     }
 
 

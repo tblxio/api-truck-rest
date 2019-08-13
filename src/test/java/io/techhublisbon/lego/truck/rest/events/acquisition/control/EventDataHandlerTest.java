@@ -5,16 +5,11 @@ import io.techhublisbon.lego.truck.rest.components.entity.Component;
 import io.techhublisbon.lego.truck.rest.components.entity.ComponentInfo;
 import io.techhublisbon.lego.truck.rest.components.entity.ComponentInfoCollection;
 import io.techhublisbon.lego.truck.rest.components.entity.Transformation;
-import io.techhublisbon.lego.truck.rest.components.entity.events.Event;
-import io.techhublisbon.lego.truck.rest.components.entity.events.MotorControllerEvent;
-import io.techhublisbon.lego.truck.rest.components.entity.events.ProximitySensorEvent;
-import io.techhublisbon.lego.truck.rest.components.entity.events.xyz.sensor.AccelerometerEvent;
-import io.techhublisbon.lego.truck.rest.components.entity.events.xyz.sensor.GyroscopeEvent;
-import io.techhublisbon.lego.truck.rest.components.entity.events.xyz.sensor.XYZSensorEvent;
 import io.techhublisbon.lego.truck.rest.errors.Errors;
+import io.techhublisbon.lego.truck.rest.events.acquisition.entity.*;
+import org.junit.Before;
 import org.junit.Rule;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -23,30 +18,29 @@ import org.mockito.Mockito;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-class EventDataHandlerTest {
+public class EventDataHandlerTest {
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
     @Mock
-    DatabaseHandler databaseHandler;
+    private DatabaseHandler databaseHandler;
     @Mock
-    ComponentInfoCollection componentInfoCollection;
+    private ComponentInfoCollection componentInfoCollection;
     @InjectMocks
-    EventDataHandler classUnderTest;
+    private EventDataHandler classUnderTest;
 
-    @BeforeEach
-    void setUp() {
+    @Before
+    public void setUp() {
         initMocks(this);
     }
 
     @Test
-    void getComponentInfo() {
+    public void getComponentInfo() {
         //given
         ComponentInfo testComponent = new ComponentInfo("motor", 1.0);
         //when
@@ -56,7 +50,7 @@ class EventDataHandlerTest {
     }
 
     @Test
-    void getMaxXYZEventInInterval() {
+    public void getMaxXYZEventInInterval() {
         //given
         final String componentString = "gyroscope";
         final Component component = Component.GYROSCOPE;
@@ -75,7 +69,7 @@ class EventDataHandlerTest {
     }
 
     @Test
-    void getMinXYZEventInIntervalTest() {
+    public void getMinXYZEventInIntervalTest() {
         //given
         final String componentString = "gyroscope";
         final Component component = Component.GYROSCOPE;
@@ -94,7 +88,7 @@ class EventDataHandlerTest {
     }
 
     @Test
-    void getMeanXYZEventInIntervalTest() {
+    public void getMeanXYZEventInIntervalTest() {
         //given
         final String componentString = "gyroscope";
         final Component component = Component.GYROSCOPE;
@@ -113,7 +107,7 @@ class EventDataHandlerTest {
     }
 
     @Test
-    void getLastXYZEventInIntervalTest() {
+    public void getLastXYZEventInIntervalTest() {
         //given
         final String componentString = "gyroscope";
         final Component component = Component.GYROSCOPE;
@@ -132,7 +126,7 @@ class EventDataHandlerTest {
     }
 
     @Test
-    void getLastMotorEventInIntervalTest() {
+    public void getLastMotorEventInIntervalTest() {
         //given
         final String componentString = "motor";
         final Component component = Component.MOTOR;
@@ -150,7 +144,7 @@ class EventDataHandlerTest {
     }
 
     @Test
-    void getLastProximityEventInIntervalTest() {
+    public void getLastProximityEventInIntervalTest() {
         //given
         final String componentString = "proximity";
         final Component component = Component.PROXIMITY;
@@ -167,7 +161,7 @@ class EventDataHandlerTest {
     }
 
     @Test
-    void getEventInIntervalInvalidTransformationTest() {
+    public void getEventInIntervalInvalidTransformationTest() {
         //given
         final String componentString = "proximity";
 
@@ -181,13 +175,13 @@ class EventDataHandlerTest {
     }
 
     @Test
-    void getEventInIntervalNoDataTest() {
+    public void getEventInIntervalNoDataTest() {
         //given
         final String componentString = "proximity";
         final long interval = 1000;
         final String transformationString = "last";
         final Transformation transformation = Transformation.LAST;
-        given(databaseHandler.getLastProximityEvent()).willReturn(null);
+        given(databaseHandler.getLastProximityEvent()).willThrow(NullPointerException.class);
         //then
         thrown.expect(new LegoTruckExceptionMatcher(Errors.RESOURCE_EMPTY, componentString, transformationString));
         //when
@@ -196,7 +190,7 @@ class EventDataHandlerTest {
 
 
     @Test
-    void getLastXYZTransformedEventHistoryTest() {
+    public void getLastXYZTransformedEventHistoryTest() {
         //given
         final String componentString = "accelerometer";
         final Component component = Component.ACCELEROMETER;
@@ -210,16 +204,14 @@ class EventDataHandlerTest {
         expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d, "accelerometer"));
         expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.3d, 1.4d, 1.2d, "accelerometer"));
         expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.4d, 1.5d, 1.3d, "accelerometer"));
-        given(databaseHandler.getAccelerometerLastEventsInInterval(begin, end, sampleInterval, fillGaps))
-                .willReturn(expectedRespose);
+        given(databaseHandler.getAccelerometerLastEventsInInterval(begin, end, sampleInterval, fillGaps)).willReturn(expectedRespose);
 
-        Collection<? extends Event> response = classUnderTest.getTransformedEventHistory(sampleInterval, componentString,
-                transformation, begin, end, fillGaps);
+        Collection<? extends Event> response = classUnderTest.getTransformedEventHistory(sampleInterval, componentString, transformation, begin, end, fillGaps);
         assertEquals(response, expectedRespose);
     }
 
     @Test
-    void getMaxXYZTransformedEventHistoryTest() {
+    public void getMaxXYZTransformedEventHistoryTest() {
         //given
         final String componentString = "accelerometer";
         final Component component = Component.ACCELEROMETER;
@@ -233,16 +225,14 @@ class EventDataHandlerTest {
         expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d, "accelerometer"));
         expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.3d, 1.4d, 1.2d, "accelerometer"));
         expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.4d, 1.5d, 1.3d, "accelerometer"));
-        given(databaseHandler.getAccelerometerMaxEventsInInterval(begin, end, sampleInterval, fillGaps))
-                .willReturn(expectedRespose);
+        given(databaseHandler.getAccelerometerMaxEventsInInterval(begin, end, sampleInterval, fillGaps)).willReturn(expectedRespose);
 
-        Collection<? extends Event> response = classUnderTest.getTransformedEventHistory(sampleInterval, componentString,
-                transformation, begin, end, fillGaps);
+        Collection<? extends Event> response = classUnderTest.getTransformedEventHistory(sampleInterval, componentString, transformation, begin, end, fillGaps);
         assertEquals(response, expectedRespose);
     }
 
     @Test
-    void getMinXYZTransformedEventHistoryTest() {
+    public void getMinXYZTransformedEventHistoryTest() {
         //given
         final String componentString = "accelerometer";
         final Component component = Component.ACCELEROMETER;
@@ -256,17 +246,15 @@ class EventDataHandlerTest {
         expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d, "accelerometer"));
         expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.3d, 1.4d, 1.2d, "accelerometer"));
         expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.4d, 1.5d, 1.3d, "accelerometer"));
-        given(databaseHandler.getAccelerometerMinEventsInInterval(begin, end, sampleInterval, fillGaps))
-                .willReturn(expectedRespose);
+        given(databaseHandler.getAccelerometerMinEventsInInterval(begin, end, sampleInterval, fillGaps)).willReturn(expectedRespose);
         //when
-        Collection<? extends Event> response = classUnderTest.getTransformedEventHistory(sampleInterval, componentString,
-                transformation, begin, end, fillGaps);
+        Collection<? extends Event> response = classUnderTest.getTransformedEventHistory(sampleInterval, componentString, transformation, begin, end, fillGaps);
         //then
         assertEquals(response, expectedRespose);
     }
 
     @Test
-    void getMedianXYZTransformedEventHistoryTest() {
+    public void getMedianXYZTransformedEventHistoryTest() {
         //given
         final String componentString = "accelerometer";
         final Component component = Component.ACCELEROMETER;
@@ -280,16 +268,14 @@ class EventDataHandlerTest {
         expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d, "accelerometer"));
         expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.3d, 1.4d, 1.2d, "accelerometer"));
         expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.4d, 1.5d, 1.3d, "accelerometer"));
-        given(databaseHandler.getAccelerometerMedianEventsInInterval(begin, end, sampleInterval, fillGaps))
-                .willReturn(expectedRespose);
+        given(databaseHandler.getAccelerometerMedianEventsInInterval(begin, end, sampleInterval, fillGaps)).willReturn(expectedRespose);
 
-        Collection<? extends Event> response = classUnderTest.getTransformedEventHistory(sampleInterval, componentString,
-                transformation, begin, end, fillGaps);
+        Collection<? extends Event> response = classUnderTest.getTransformedEventHistory(sampleInterval, componentString, transformation, begin, end, fillGaps);
         assertEquals(response, expectedRespose);
     }
 
     @Test
-    void getTransformedEventHistoryNoData() {
+    public void getTransformedEventHistoryNoData() {
         //given
         final String componentString = "accelerometer";
         final Component component = Component.ACCELEROMETER;
@@ -299,17 +285,15 @@ class EventDataHandlerTest {
         final long end = 1000;
         final long sampleInterval = 100;
         boolean fillGaps = false;
-        given(databaseHandler.getAccelerometerMaxEventsInInterval(begin, end, sampleInterval, fillGaps))
-                .willReturn(null);
+        given(databaseHandler.getAccelerometerLastEventsInInterval(begin, end, sampleInterval, fillGaps)).willThrow(NullPointerException.class);
         //then
         thrown.expect(new LegoTruckExceptionMatcher(Errors.RESOURCE_EMPTY, componentString, transformation));
         //when
-        classUnderTest.getTransformedEventHistory(sampleInterval, componentString,
-                transformation, begin, end, fillGaps);
+        classUnderTest.getTransformedEventHistory(sampleInterval, componentString, transformation, begin, end, fillGaps);
     }
 
     @Test
-    void getTransformedEventHistoryInvalidComponent() {
+    public void getTransformedEventHistoryInvalidComponent() {
         //given
         final String componentString = "motor";
         final Component component = Component.MOTOR;
@@ -319,17 +303,15 @@ class EventDataHandlerTest {
         final long end = 1000;
         final long sampleInterval = 100;
         boolean fillGaps = false;
-        given(databaseHandler.getAccelerometerMaxEventsInInterval(begin, end, sampleInterval, fillGaps))
-                .willReturn(null);
+        given(databaseHandler.getAccelerometerMaxEventsInInterval(begin, end, sampleInterval, fillGaps)).willReturn(null);
         //then
-        thrown.expect(new LegoTruckExceptionMatcher(Errors.RESOURCE_NOT_FOUND, component, transformation));
+        thrown.expect(new LegoTruckExceptionMatcher(Errors.RESOURCE_NOT_FOUND, component, "last"));
         //when
-        classUnderTest.getTransformedEventHistory(sampleInterval, componentString,
-                transformation, begin, end, fillGaps);
+        classUnderTest.getTransformedEventHistory(sampleInterval, componentString, transformation, begin, end, fillGaps);
     }
 
     @Test
-    void getAccelerometerEventsInIntervalTest() {
+    public void getAccelerometerEventsInIntervalTest() {
         //given
         final String componentString = "accelerometer";
         final Component component = Component.ACCELEROMETER;
@@ -339,8 +321,7 @@ class EventDataHandlerTest {
         expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d, "accelerometer"));
         expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.3d, 1.4d, 1.2d, "accelerometer"));
         expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.4d, 1.5d, 1.3d, "accelerometer"));
-        given(databaseHandler.getAccelerometerEventsInInterval(begin, end))
-                .willReturn(expectedRespose);
+        given(databaseHandler.getAccelerometerEventsInInterval(begin, end)).willReturn(expectedRespose);
         //when
         Collection<? extends Event> response = classUnderTest.getEventsInInterval(componentString, begin, end);
         //then
@@ -348,7 +329,7 @@ class EventDataHandlerTest {
     }
 
     @Test
-    void getGyroscopeEventsInIntervalTest() {
+    public void getGyroscopeEventsInIntervalTest() {
         //given
         final String componentString = "gyroscope";
         final Component component = Component.GYROSCOPE;
@@ -358,8 +339,7 @@ class EventDataHandlerTest {
         expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d, "accelerometer"));
         expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.3d, 1.4d, 1.2d, "accelerometer"));
         expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.4d, 1.5d, 1.3d, "accelerometer"));
-        given(databaseHandler.getGyroscopeEventsInInterval(begin, end))
-                .willReturn(expectedRespose);
+        given(databaseHandler.getGyroscopeEventsInInterval(begin, end)).willReturn(expectedRespose);
         //when
         Collection<? extends Event> response = classUnderTest.getEventsInInterval(componentString, begin, end);
         //then
@@ -367,7 +347,7 @@ class EventDataHandlerTest {
     }
 
     @Test
-    void getMotorEventsInIntervalTest() {
+    public void getMotorEventsInIntervalTest() {
         //given
         final String componentString = "motor";
         final Component component = Component.MOTOR;
@@ -377,8 +357,7 @@ class EventDataHandlerTest {
         expectedRespose.add(new MotorControllerEvent(System.currentTimeMillis(), 1.2d, 1.3d, "motor"));
         expectedRespose.add(new MotorControllerEvent(System.currentTimeMillis(), 1.3d, 1.4d, "motor"));
         expectedRespose.add(new MotorControllerEvent(System.currentTimeMillis(), 1.4d, 1.5d, "motor"));
-        given(databaseHandler.getMotorEventsInInterval(begin, end))
-                .willReturn(expectedRespose);
+        given(databaseHandler.getMotorEventsInInterval(begin, end)).willReturn(expectedRespose);
         //when
         Collection<? extends Event> response = classUnderTest.getEventsInInterval(componentString, begin, end);
         //then
@@ -386,7 +365,7 @@ class EventDataHandlerTest {
     }
 
     @Test
-    void getProximityEventsInIntervalTest() {
+    public void getProximityEventsInIntervalTest() {
         //given
         final String componentString = "proximity";
         final Component component = Component.PROXIMITY;
@@ -396,8 +375,7 @@ class EventDataHandlerTest {
         expectedRespose.add(new ProximitySensorEvent(System.currentTimeMillis(), 1.2d, "proximity"));
         expectedRespose.add(new ProximitySensorEvent(System.currentTimeMillis(), 1.3d, "proximity"));
         expectedRespose.add(new ProximitySensorEvent(System.currentTimeMillis(), 1.4d, "proximity"));
-        given(databaseHandler.getProximityEventsInInterval(begin, end))
-                .willReturn(expectedRespose);
+        given(databaseHandler.getProximityEventsInInterval(begin, end)).willReturn(expectedRespose);
         //when
         Collection<? extends Event> response = classUnderTest.getEventsInInterval(componentString, begin, end);
         //then
@@ -405,7 +383,7 @@ class EventDataHandlerTest {
     }
 
     @Test
-    void deleteEventsInIntervalTest() {
+    public void deleteEventsInIntervalTest() {
         //given
         final String componentString = "proximity";
         final Component component = Component.PROXIMITY;

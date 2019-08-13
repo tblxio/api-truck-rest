@@ -1,6 +1,6 @@
 package io.techhublisbon.lego.truck.rest.components.control;
 
-import io.techhublisbon.lego.truck.rest.components.entity.events.Event;
+import io.techhublisbon.lego.truck.rest.events.acquisition.entity.Event;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -13,19 +13,14 @@ import java.util.Collection;
 @NoRepositoryBean
 public interface EventRepository<T extends Event> extends CrudRepository<T, Long> {
 
-    @Query(value = "SELECT * FROM #{#entityName} a where timestamp between :begin and :end ;",
-            nativeQuery = true)
-    Collection<T> findEventsInInterval(@Param("begin") long begin,
-                                       @Param("end") long end);
+    @Query(value = "SELECT * FROM #{#entityName} a where timestamp between :begin and :end ;", nativeQuery = true)
+    Collection<T> findEventsInInterval(@Param("begin") long begin, @Param("end") long end);
 
-    @Query(value = "SELECT * FROM #{#entityName} ORDER BY timestamp DESC LIMIT 1;",
-            nativeQuery = true)
+    @Query(value = "SELECT * FROM #{#entityName} ORDER BY timestamp DESC LIMIT 1;", nativeQuery = true)
     T findLastEvent();
 
     @Modifying
     @Transactional
-    @Query(value = "DELETE FROM #{#entityName} where timestamp between :begin and :end ;",
-            nativeQuery = true)
-    void deleteEventsInInterval(@Param("begin") long begin,
-                                @Param("end") long end);
+    @Query(value = "DELETE FROM #{#entityName} where timestamp between :begin and :end ;", nativeQuery = true)
+    void deleteEventsInInterval(@Param("begin") long begin, @Param("end") long end);
 }

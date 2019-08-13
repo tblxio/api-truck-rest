@@ -17,19 +17,6 @@ import java.util.Collections;
 public class SwaggerConfig {
     @Bean
     public Docket api() {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .select()
-                .apis(RequestHandlerSelectors.basePackage("io.techhublisbon.lego.truck.rest"))
-                .paths(PathSelectors.any())
-                .build()
-                .apiInfo(new ApiInfo(
-                        "Lego-Truck API",
-                        "Lego Truck Drive Commands and Data",
-                        "",
-                        "",
-                        new Contact("", "", ""),
-                        "",
-                        "",
-                        Collections.emptyList()));
+        return new Docket(DocumentationType.SWAGGER_2).select().apis(RequestHandlerSelectors.basePackage("io.techhublisbon.lego.truck.rest")).paths(PathSelectors.any()).build().apiInfo(new ApiInfo("Lego-Truck API", "Lego Truck Drive Commands and Data", "", "", new Contact("", "", ""), "", "", Collections.emptyList()));
     }
 }

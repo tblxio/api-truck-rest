@@ -30,8 +30,7 @@ public class ComponentsResource {
     @GetMapping("/components")
     public ResponseEntity<Component[]> getComponents() {
         Component[] components = Component.values();
-        return ResponseEntity.ok()
-                .body(components);
+        return ResponseEntity.ok().body(components);
     }
 
     @ApiOperation(value = "Returns the information of the requested components")
@@ -39,15 +38,13 @@ public class ComponentsResource {
     public ResponseEntity<ComponentInfo> getComponentInfo(@PathVariable String component) {
         inputValidator.checkValidComponent(component);
         ComponentInfo info = eventDataHandler.getComponentInfo(Component.valueOf(component.toUpperCase()));
-        return ResponseEntity.ok()
-                .body(info);
+        return ResponseEntity.ok().body(info);
     }
 
     @ApiOperation(value = "Returns the transformations registered in the system, which can be used when downsampling the data")
     @GetMapping("/transformations")
     public ResponseEntity<Transformation[]> getTransformations() {
         Transformation[] transformations = Transformation.values();
-        return ResponseEntity.ok()
-                .body(transformations);
+        return ResponseEntity.ok().body(transformations);
     }
 }

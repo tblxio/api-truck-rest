@@ -23,7 +23,6 @@ public class CameraResource {
     public ResponseEntity<String> getVideoStreamPath() {
 
         String streamString = componentInfoCollection.getVideoStream().getVideoStreamURL();
-        return ResponseEntity.ok()
-                .body(streamString);
+        return ResponseEntity.ok().body(streamString);
     }
 }

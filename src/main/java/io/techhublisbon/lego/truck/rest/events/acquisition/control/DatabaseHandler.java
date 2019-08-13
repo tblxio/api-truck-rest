@@ -5,13 +5,8 @@ import io.techhublisbon.lego.truck.rest.components.control.GyroscopeEventReposit
 import io.techhublisbon.lego.truck.rest.components.control.MotorControllerEventRepository;
 import io.techhublisbon.lego.truck.rest.components.control.ProximitySensorEventRepository;
 import io.techhublisbon.lego.truck.rest.components.entity.Component;
-import io.techhublisbon.lego.truck.rest.components.entity.events.MotorControllerEvent;
-import io.techhublisbon.lego.truck.rest.components.entity.events.ProximitySensorEvent;
-import io.techhublisbon.lego.truck.rest.components.entity.events.xyz.sensor.AccelerometerEvent;
-import io.techhublisbon.lego.truck.rest.components.entity.events.xyz.sensor.GyroscopeEvent;
-import io.techhublisbon.lego.truck.rest.components.entity.events.xyz.sensor.XYZSensorEvent;
 import io.techhublisbon.lego.truck.rest.errors.Errors;
-import io.techhublisbon.lego.truck.rest.events.acquisition.entity.LegoTruckException;
+import io.techhublisbon.lego.truck.rest.events.acquisition.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
@@ -30,33 +25,19 @@ public class DatabaseHandler {
     private ProximitySensorEventRepository proximitySensorEventRepository;
 
     @Autowired
-    public DatabaseHandler(AccelerometerEventRepository accelerometerEventRepository,
-                           GyroscopeEventRepository gyroscopeEventRepository,
-                           MotorControllerEventRepository motorControllerEventRepository,
-                           ProximitySensorEventRepository proximitySensorEventRepository) {
+    public DatabaseHandler(AccelerometerEventRepository accelerometerEventRepository, GyroscopeEventRepository gyroscopeEventRepository, MotorControllerEventRepository motorControllerEventRepository, ProximitySensorEventRepository proximitySensorEventRepository) {
         this.accelerometerEventRepository = accelerometerEventRepository;
         this.gyroscopeEventRepository = gyroscopeEventRepository;
         this.motorControllerEventRepository = motorControllerEventRepository;
         this.proximitySensorEventRepository = proximitySensorEventRepository;
     }
 
-    void saveXYZSensorEvents(Collection<AccelerometerEvent> accelerometerEvents,
-                             Collection<GyroscopeEvent> gyroscopeEvents
-    ) {
-        accelerometerEventRepository.saveAll(accelerometerEvents);
-        gyroscopeEventRepository.saveAll(gyroscopeEvents);
-    }
 
-    public void saveXYZSensorEvent(AccelerometerEvent accelerometerEvent,
-                                   GyroscopeEvent gyroscopeEvent
-    ) {
+    public void saveXYZSensorEvent(AccelerometerEvent accelerometerEvent, GyroscopeEvent gyroscopeEvent) {
         accelerometerEventRepository.save(accelerometerEvent);
         gyroscopeEventRepository.save(gyroscopeEvent);
     }
 
-    void saveMotorControllerEvents(Collection<MotorControllerEvent> motorControllerEvents) {
-        motorControllerEventRepository.saveAll(motorControllerEvents);
-    }
 
     public void saveMotorControllerEvent(MotorControllerEvent motorControllerEvent) {
         motorControllerEventRepository.save(motorControllerEvent);
@@ -104,7 +85,7 @@ public class DatabaseHandler {
 
     Collection<GyroscopeEvent> getGyroscopeLastEventsInInterval(long begin, long end, long interval, boolean fillGaps) {
         if (fillGaps) return gyroscopeEventRepository.findLastEventsInIntervalFillingGaps(begin, end, interval);
-        return gyroscopeEventRepository.findLastEventsInIntervalFillingGaps(begin, end, interval);
+        return gyroscopeEventRepository.findLastEventsInInterval(begin, end, interval);
     }
 
     Collection<AccelerometerEvent> getAccelerometerMeanEventsInInterval(long begin, long end, long interval, boolean fillGaps) {
@@ -139,7 +120,7 @@ public class DatabaseHandler {
             case ACCELEROMETER:
                 return accelerometerEventRepository.findEventMeaninLastTimeUnits(interval);
         }
-        throw new LegoTruckException(Errors.RESOURCE_NOT_FOUND, component);
+        throw new LegoTruckException(Errors.RESOURCE_NOT_FOUND, component, "last");
     }
 
     XYZSensorEvent getXYZSensorMaxEventInLastInterval(long interval, Component component) {

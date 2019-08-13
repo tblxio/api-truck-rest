@@ -34,8 +34,7 @@ public class ComponentInfoCollection {
         List<ComponentInfo> components = componentInfos.stream().filter(item -> item.getName().equals(component)).
                 collect(Collectors.toList());
         if (components.isEmpty()) throw new LegoTruckException(Errors.RESOURCE_EMPTY, component, "disconnected");
-        else
-            return components.get(0);
+        else return components.get(0);
     }
 
     public VideoStream getVideoStream() {

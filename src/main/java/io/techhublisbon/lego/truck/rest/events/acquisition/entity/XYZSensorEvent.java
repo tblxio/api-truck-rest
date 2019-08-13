@@ -1,7 +1,6 @@
-package io.techhublisbon.lego.truck.rest.components.entity.events.xyz.sensor;
+package io.techhublisbon.lego.truck.rest.events.acquisition.entity;
 
 import io.techhublisbon.lego.truck.rest.components.entity.Component;
-import io.techhublisbon.lego.truck.rest.components.entity.events.Event;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONObject;
@@ -71,11 +70,7 @@ public class XYZSensorEvent extends Event {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         XYZSensorEvent xyzSensorEvent = (XYZSensorEvent) o;
-        return super.getTimestamp() == xyzSensorEvent.getTimestamp() &&
-                Double.compare(xyzSensorEvent.x, x) == 0 &&
-                Double.compare(xyzSensorEvent.y, y) == 0 &&
-                Double.compare(xyzSensorEvent.z, z) == 0 &&
-                Objects.equals(name, xyzSensorEvent.name);
+        return super.getTimestamp() == xyzSensorEvent.getTimestamp() && Double.compare(xyzSensorEvent.x, x) == 0 && Double.compare(xyzSensorEvent.y, y) == 0 && Double.compare(xyzSensorEvent.z, z) == 0 && Objects.equals(name, xyzSensorEvent.name);
     }
 
     @Override
@@ -85,13 +80,7 @@ public class XYZSensorEvent extends Event {
 
     @Override
     public String toString() {
-        return "XYZSensorEvent{" +
-                "timestamp=" + super.getTimestamp() +
-                ", x=" + x +
-                ", y=" + y +
-                ", z=" + z +
-                ", name=" + name +
-                '}';
+        return "XYZSensorEvent{" + "timestamp=" + super.getTimestamp() + ", x=" + x + ", y=" + y + ", z=" + z + ", name=" + name + '}';
     }
 }
 

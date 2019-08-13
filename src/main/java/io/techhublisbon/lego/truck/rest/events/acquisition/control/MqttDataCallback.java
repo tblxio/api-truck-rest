@@ -1,14 +1,10 @@
-package io.techhublisbon.lego.truck.rest.events.acquisition.entity;
+package io.techhublisbon.lego.truck.rest.events.acquisition.control;
 
 import io.techhublisbon.lego.truck.rest.components.entity.ComponentInfo;
 import io.techhublisbon.lego.truck.rest.components.entity.ComponentInfoCollection;
 import io.techhublisbon.lego.truck.rest.components.entity.VideoStream;
-import io.techhublisbon.lego.truck.rest.components.entity.events.MotorControllerEvent;
-import io.techhublisbon.lego.truck.rest.components.entity.events.ProximitySensorEvent;
-import io.techhublisbon.lego.truck.rest.components.entity.events.xyz.sensor.AccelerometerEvent;
-import io.techhublisbon.lego.truck.rest.components.entity.events.xyz.sensor.GyroscopeEvent;
 import io.techhublisbon.lego.truck.rest.errors.Errors;
-import io.techhublisbon.lego.truck.rest.events.acquisition.control.DatabaseHandler;
+import io.techhublisbon.lego.truck.rest.events.acquisition.entity.*;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -29,8 +25,7 @@ public class MqttDataCallback implements MqttCallback {
 
     private DatabaseHandler databaseHandler;
 
-    public MqttDataCallback(ComponentInfoCollection myComponents,
-                            DatabaseHandler databaseHandler) {
+    public MqttDataCallback(ComponentInfoCollection myComponents, DatabaseHandler databaseHandler) {
         this.myComponents = myComponents;
         this.databaseHandler = databaseHandler;
     }
@@ -49,8 +44,7 @@ public class MqttDataCallback implements MqttCallback {
      * @param message The message
      */
     @Override
-    public void messageArrived(String topic, MqttMessage message)
-            throws Exception {
+    public void messageArrived(String topic, MqttMessage message) {
         String[] subtopics = topic.split("/");
         String componentName = subtopics[1];
         if (componentName.equals("components")) this.handleComponentsMessage(message);
@@ -76,8 +70,7 @@ public class MqttDataCallback implements MqttCallback {
             if (msg.get("name").equals("imu")) {
                 myComponents.getComponentInfos().add(new ComponentInfo("gyroscope", msg.get("pollRate")));
                 myComponents.getComponentInfos().add(new ComponentInfo("accelerometer", msg.get("pollRate")));
-            } else
-                myComponents.getComponentInfos().add(new ComponentInfo(msg.get("name"), msg.get("pollRate")));
+            } else myComponents.getComponentInfos().add(new ComponentInfo(msg.get("name"), msg.get("pollRate")));
         } catch (Exception e) {
             // Catches exceptions related to malformed payloads
             e.printStackTrace();
@@ -95,14 +88,8 @@ public class MqttDataCallback implements MqttCallback {
             JSONObject accel = msg.getJSONObject("accel");
             JSONObject gyro = msg.getJSONObject("gyro");
             long timestamp = (long) msg.get("timestamp");
-            GyroscopeEvent gyroscopeEvent = new GyroscopeEvent(timestamp / 1000,
-                    gyro.get("x"),
-                    gyro.get("y"),
-                    gyro.get("z"), "gyroscope");
-            AccelerometerEvent accelerometerEvent = new AccelerometerEvent(timestamp / 1000,
-                    accel.get("x"),
-                    accel.get("y"),
-                    accel.get("z"), "accelerometer");
+            GyroscopeEvent gyroscopeEvent = new GyroscopeEvent(timestamp / 1000, gyro.get("x"), gyro.get("y"), gyro.get("z"), "gyroscope");
+            AccelerometerEvent accelerometerEvent = new AccelerometerEvent(timestamp / 1000, accel.get("x"), accel.get("y"), accel.get("z"), "accelerometer");
 
             databaseHandler.saveXYZSensorEvent(accelerometerEvent, gyroscopeEvent); // Inserts in local database takes around 1ms.
         } catch (Exception e) {

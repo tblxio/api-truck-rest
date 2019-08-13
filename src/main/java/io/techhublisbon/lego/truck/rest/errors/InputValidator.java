@@ -18,6 +18,9 @@ public class InputValidator {
         this.componentInfoCollection = componentInfoCollection;
     }
 
+    public InputValidator() {
+    }
+
     public void checkValidComponent(String requestedComponent) {
         try {
             Component.valueOf(requestedComponent.toUpperCase());
@@ -70,6 +73,16 @@ public class InputValidator {
     public void checkBeginTransformedHistoryLessThan1MonthAgo(long begin) {
         long oneMonthAgo = (System.currentTimeMillis() - 2678400000L);
         if (begin < oneMonthAgo)
-            throw new LegoTruckException(Errors.INVALID_PARAMETER, "From needs to be later than two months ago");
+            throw new LegoTruckException(Errors.INVALID_PARAMETER, "From needs to be later than one month ago");
+    }
+
+    public void checkValidMotorMotion(String motion) {
+        if (!motion.equals("linear") && !motion.equals("angular"))
+            throw new LegoTruckException(Errors.INVALID_PARAMETER, "motion has to be either linear or angular");
+    }
+
+    public void checkValidMotorPower(int power) {
+        if (Math.abs(power) > 100)
+            throw new LegoTruckException(Errors.INVALID_PARAMETER, "power has to be smaller than 100");
     }
 }

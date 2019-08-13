@@ -1,7 +1,7 @@
 package io.techhublisbon.lego.truck.rest.events.acquisition.control;
 
-import io.techhublisbon.lego.truck.rest.components.entity.events.Event;
 import io.techhublisbon.lego.truck.rest.errors.Errors;
+import io.techhublisbon.lego.truck.rest.events.acquisition.entity.Event;
 import io.techhublisbon.lego.truck.rest.events.acquisition.entity.LegoTruckException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -31,12 +31,14 @@ public class EventStreamingHandler {
      */
     private ConcurrentMap<String, String> subscriptions;
     private EventDataHandler eventDataHandler;
+    private Random random;
 
     @Autowired
     public EventStreamingHandler(MessageSendingOperations<String> messagingTemplate, EventDataHandler eventDataHandler) {
         this.messagingTemplate = messagingTemplate;
         this.subscriptions = new ConcurrentHashMap<>();
         this.eventDataHandler = eventDataHandler;
+        this.random = new Random();
     }
 
 
@@ -49,7 +51,6 @@ public class EventStreamingHandler {
      */
     @Async
     @EventListener
-    //TODO check the exception handling here
     public void onSubscribeApplicationEvent(SessionSubscribeEvent event) {
         SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(event.getMessage());
         String destination = headers.getDestination();
@@ -76,7 +77,7 @@ public class EventStreamingHandler {
     public void streamer(String sessionId, String destination, int interval, String fields, String transformation) {
         // Get different components from request
         String[] components = fields.split("-");
-        while (this.subscriptions.containsKey(sessionId)) {
+        do {
             // If the client disconnects his sessionId is removed, so the loop should stop
             // Send the last data from each components
             try {
@@ -89,7 +90,7 @@ public class EventStreamingHandler {
             } catch (InterruptedException e) {
                 throw new LegoTruckException(Errors.INTERNAL_SERVER_ERROR);
             }
-        }
+        } while (this.subscriptions.containsKey(sessionId));
     }
 
     /**

@@ -1,4 +1,4 @@
-package io.techhublisbon.lego.truck.rest.components.entity.events.xyz.sensor;
+package io.techhublisbon.lego.truck.rest.events.acquisition.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;

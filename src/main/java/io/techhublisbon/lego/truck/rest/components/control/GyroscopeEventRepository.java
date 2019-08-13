@@ -1,6 +1,6 @@
 package io.techhublisbon.lego.truck.rest.components.control;
 
-import io.techhublisbon.lego.truck.rest.components.entity.events.xyz.sensor.GyroscopeEvent;
+import io.techhublisbon.lego.truck.rest.events.acquisition.entity.GyroscopeEvent;
 
 import javax.transaction.Transactional;
 

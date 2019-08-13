@@ -16,7 +16,6 @@ public class ErrorHandler {
     }
 
     private ResponseEntity<ErrorResponse> builResponse(final int statusCode, final ErrorResponse errorResponse) {
-        return ResponseEntity.status(statusCode)
-                .body(errorResponse);
+        return ResponseEntity.status(statusCode).body(errorResponse);
     }
 }

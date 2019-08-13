@@ -24,14 +24,12 @@ public class LegoTruckExceptionMatcher extends BaseMatcher<LegoTruckException> {
 
         final LegoTruckException other = (LegoTruckException) item;
 
-        return legoTruckError == other.getError()
-                && Arrays.equals(parameters, other.getMessageParameters());
+        return legoTruckError == other.getError() && Arrays.equals(parameters, other.getMessageParameters());
     }
 
     @Override
     public void describeTo(Description description) {
-        description.appendValue(legoTruckError.toString()
-                + " with parameters " + Arrays.toString(parameters));
+        description.appendValue(legoTruckError.toString() + " with parameters " + Arrays.toString(parameters));
     }
 
     @Override
@@ -40,9 +38,7 @@ public class LegoTruckExceptionMatcher extends BaseMatcher<LegoTruckException> {
             description.appendText("was ").appendValue(item);
         } else {
             final LegoTruckException other = (LegoTruckException) item;
-            description.appendValue(other.getError().toString()
-                    + " with parameters "
-                    + Arrays.toString(other.getMessageParameters()));
+            description.appendValue(other.getError().toString() + " with parameters " + Arrays.toString(other.getMessageParameters()));
         }
     }
 }

@@ -5,10 +5,9 @@ import io.techhublisbon.lego.truck.rest.components.entity.Component;
 import io.techhublisbon.lego.truck.rest.components.entity.ComponentInfo;
 import io.techhublisbon.lego.truck.rest.components.entity.ComponentInfoCollection;
 import io.techhublisbon.lego.truck.rest.components.entity.Transformation;
-import io.techhublisbon.lego.truck.rest.components.entity.events.Event;
 import io.techhublisbon.lego.truck.rest.errors.Errors;
+import io.techhublisbon.lego.truck.rest.events.acquisition.entity.Event;
 import io.techhublisbon.lego.truck.rest.events.acquisition.entity.LegoTruckException;
-import io.techhublisbon.lego.truck.rest.events.acquisition.entity.MqttDataCallback;
 import lombok.Getter;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,16 +68,13 @@ public class EventDataHandler {
             Transformation transformation = Transformation.valueOf(transformationString.toUpperCase());
             switch (transformation) {
                 case MAX:
-                    if (component == Component.MOTOR || component == Component.PROXIMITY)
-                        break;
+                    if (component == Component.MOTOR || component == Component.PROXIMITY) break;
                     return maxEvent(interval, component);
                 case MEAN:
-                    if (component == Component.MOTOR || component == Component.PROXIMITY)
-                        break;
+                    if (component == Component.MOTOR || component == Component.PROXIMITY) break;
                     return meanEvent(interval, component);
                 case MIN:
-                    if (component == Component.MOTOR || component == Component.PROXIMITY)
-                        break;
+                    if (component == Component.MOTOR || component == Component.PROXIMITY) break;
                     return minEvent(interval, component);
                 case LAST:
                     return getLastEvent(component);
@@ -181,13 +177,12 @@ public class EventDataHandler {
      * @param begin          The beginning of the interval
      * @param end            The end of the interval
      */
-    public Collection<? extends Event> getTransformedEventHistory(long sampleInterval, String comp, String transform, long begin,
-                                                                  long end, boolean fillGaps) throws IllegalArgumentException, LegoTruckException {
+    public Collection<? extends Event> getTransformedEventHistory(long sampleInterval, String comp, String transform, long begin, long end, boolean fillGaps) throws IllegalArgumentException, LegoTruckException {
         try {
             Component component = Component.valueOf(comp.toUpperCase());
 
             if (component == Component.MOTOR)
-                throw new LegoTruckException(Errors.RESOURCE_NOT_FOUND, component, transform);
+                throw new LegoTruckException(Errors.RESOURCE_NOT_FOUND, component, "last");
             Transformation transformation = Transformation.valueOf(transform.toUpperCase());
 
             switch (transformation) {

@@ -1,4 +1,4 @@
-package io.techhublisbon.lego.truck.rest.components.entity.events;
+package io.techhublisbon.lego.truck.rest.events.acquisition.entity;
 
 import io.techhublisbon.lego.truck.rest.components.entity.Component;
 import lombok.Getter;
@@ -40,11 +40,7 @@ public class ProximitySensorEvent extends Event {
 
     @Override
     public String toString() {
-        return "ProximitySensorEvent{" +
-                "distance=" + distance +
-                ", name=" + name +
-                ", timestamp=" + timestamp +
-                '}';
+        return "ProximitySensorEvent{" + "distance=" + distance + ", name=" + name + ", timestamp=" + timestamp + '}';
     }
 
     @Override
@@ -52,8 +48,7 @@ public class ProximitySensorEvent extends Event {
         if (this == o) return true;
         if (!(o instanceof ProximitySensorEvent)) return false;
         ProximitySensorEvent that = (ProximitySensorEvent) o;
-        return Double.compare(that.getDistance(), getDistance()) == 0 &&
-                getName() == that.getName();
+        return Double.compare(that.getDistance(), getDistance()) == 0 && getName() == that.getName();
     }
 
     @Override
