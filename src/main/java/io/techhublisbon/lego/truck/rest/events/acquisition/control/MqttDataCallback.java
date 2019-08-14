@@ -88,8 +88,8 @@ public class MqttDataCallback implements MqttCallback {
             JSONObject accel = msg.getJSONObject("accel");
             JSONObject gyro = msg.getJSONObject("gyro");
             long timestamp = (long) msg.get("timestamp");
-            GyroscopeEvent gyroscopeEvent = new GyroscopeEvent(timestamp / 1000, gyro.get("x"), gyro.get("y"), gyro.get("z"), "gyroscope");
-            AccelerometerEvent accelerometerEvent = new AccelerometerEvent(timestamp / 1000, accel.get("x"), accel.get("y"), accel.get("z"), "accelerometer");
+            GyroscopeEvent gyroscopeEvent = new GyroscopeEvent(timestamp / 1000, gyro.get("x"), gyro.get("y"), gyro.get("z"));
+            AccelerometerEvent accelerometerEvent = new AccelerometerEvent(timestamp / 1000, accel.get("x"), accel.get("y"), accel.get("z"));
 
             databaseHandler.saveXYZSensorEvent(accelerometerEvent, gyroscopeEvent); // Inserts in local database takes around 1ms.
         } catch (Exception e) {
@@ -107,7 +107,7 @@ public class MqttDataCallback implements MqttCallback {
         try {
             JSONObject msg = new JSONObject(message.toString());
             JSONObject resp_msg = msg.getJSONObject("resp_msg");
-            MotorControllerEvent incoming = new MotorControllerEvent(System.currentTimeMillis(), resp_msg.get("voltage"), resp_msg.get("temperature"), "motor");
+            MotorControllerEvent incoming = new MotorControllerEvent(System.currentTimeMillis(), resp_msg.get("voltage"), resp_msg.get("temperature"));
             databaseHandler.saveMotorControllerEvent(incoming);
         } catch (Exception e) {
             System.out.println("Data should be on the right format  + " + e.getMessage());
@@ -122,7 +122,7 @@ public class MqttDataCallback implements MqttCallback {
         try {
             JSONObject msg = new JSONObject(message.toString());
             long timestamp = (long) msg.get("timestamp");
-            databaseHandler.saveProximitySensorEvent(new ProximitySensorEvent(timestamp / 1000, msg.get("distance"), "proximity"));
+            databaseHandler.saveProximitySensorEvent(new ProximitySensorEvent(timestamp / 1000, msg.get("distance")));
 
         } catch (Exception e) {
             System.out.println("[Proximity] Data should be on the right format  + " + e.getMessage());

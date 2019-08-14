@@ -27,10 +27,10 @@ public class ProximitySensorEvent extends Event {
     private double distance;
     private Component name;
 
-    public ProximitySensorEvent(Object timestamp, Object distance, String name) {
+    public ProximitySensorEvent(Object timestamp, Object distance) {
         super((long) timestamp);
         this.distance = (Double) distance;
-        this.name = Component.valueOf(name.toUpperCase());
+        this.name = Component.PROXIMITY;
     }
 
     public ProximitySensorEvent() {

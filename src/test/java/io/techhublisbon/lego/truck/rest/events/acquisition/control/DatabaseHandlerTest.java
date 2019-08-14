@@ -7,10 +7,7 @@ import io.techhublisbon.lego.truck.rest.components.control.MotorControllerEventR
 import io.techhublisbon.lego.truck.rest.components.control.ProximitySensorEventRepository;
 import io.techhublisbon.lego.truck.rest.components.entity.Component;
 import io.techhublisbon.lego.truck.rest.errors.Errors;
-import io.techhublisbon.lego.truck.rest.events.acquisition.entity.AccelerometerEvent;
-import io.techhublisbon.lego.truck.rest.events.acquisition.entity.Event;
-import io.techhublisbon.lego.truck.rest.events.acquisition.entity.GyroscopeEvent;
-import io.techhublisbon.lego.truck.rest.events.acquisition.entity.XYZSensorEvent;
+import io.techhublisbon.lego.truck.rest.events.acquisition.entity.*;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -54,9 +51,9 @@ public class DatabaseHandlerTest {
         long begin = 1000;
         long end = 1001;
         Collection<AccelerometerEvent> expectedRespose = new ArrayList<>();
-        expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d, "accelerometer"));
-        expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.3d, 1.4d, 1.2d, "accelerometer"));
-        expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.4d, 1.5d, 1.3d, "accelerometer"));
+        expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d));
+        expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.3d, 1.4d, 1.2d));
+        expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.4d, 1.5d, 1.3d));
         given(accelerometerEventRepository.findEventsInInterval(begin, end)).willReturn(expectedRespose);
         //when
         Collection<? extends Event> response = classUnderTest.getAccelerometerEventsInInterval(begin, end);
@@ -72,9 +69,9 @@ public class DatabaseHandlerTest {
         long interval = 100;
         boolean fillGaps = false;
         Collection<GyroscopeEvent> expectedRespose = new ArrayList<>();
-        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d, "Gyroscope"));
-        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.3d, 1.4d, 1.2d, "Gyroscope"));
-        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.4d, 1.5d, 1.3d, "Gyroscope"));
+        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d));
+        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.3d, 1.4d, 1.2d));
+        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.4d, 1.5d, 1.3d));
         given(gyroscopeEventRepository.findAvgEventsInInterval(begin, end, interval)).willReturn(expectedRespose);
         //when
         Collection<? extends Event> response = classUnderTest.getGyroscopeMeanEventsInInterval(begin, end, interval, fillGaps);
@@ -90,9 +87,9 @@ public class DatabaseHandlerTest {
         long interval = 100;
         boolean fillGaps = true;
         Collection<GyroscopeEvent> expectedRespose = new ArrayList<>();
-        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d, "Gyroscope"));
-        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.3d, 1.4d, 1.2d, "Gyroscope"));
-        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.4d, 1.5d, 1.3d, "Gyroscope"));
+        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d));
+        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.3d, 1.4d, 1.2d));
+        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.4d, 1.5d, 1.3d));
         given(gyroscopeEventRepository.findAvgEventsInIntervalFillingGaps(begin, end, interval)).willReturn(expectedRespose);
         //when
         Collection<? extends Event> response = classUnderTest.getGyroscopeMeanEventsInInterval(begin, end, interval, fillGaps);
@@ -108,9 +105,9 @@ public class DatabaseHandlerTest {
         long interval = 100;
         boolean fillGaps = false;
         Collection<GyroscopeEvent> expectedRespose = new ArrayList<>();
-        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d, "Gyroscope"));
-        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.3d, 1.4d, 1.2d, "Gyroscope"));
-        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.4d, 1.5d, 1.3d, "Gyroscope"));
+        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d));
+        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.3d, 1.4d, 1.2d));
+        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.4d, 1.5d, 1.3d));
         given(gyroscopeEventRepository.findMaxEventsInInterval(begin, end, interval)).willReturn(expectedRespose);
         //when
         Collection<? extends Event> response = classUnderTest.getGyroscopeMaxEventsInInterval(begin, end, interval, fillGaps);
@@ -126,9 +123,9 @@ public class DatabaseHandlerTest {
         long interval = 100;
         boolean fillGaps = true;
         Collection<GyroscopeEvent> expectedRespose = new ArrayList<>();
-        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d, "Gyroscope"));
-        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.3d, 1.4d, 1.2d, "Gyroscope"));
-        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.4d, 1.5d, 1.3d, "Gyroscope"));
+        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d));
+        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.3d, 1.4d, 1.2d));
+        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.4d, 1.5d, 1.3d));
         given(gyroscopeEventRepository.findMaxEventsInIntervalFillingGaps(begin, end, interval)).willReturn(expectedRespose);
         //when
         Collection<? extends Event> response = classUnderTest.getGyroscopeMaxEventsInInterval(begin, end, interval, fillGaps);
@@ -144,9 +141,9 @@ public class DatabaseHandlerTest {
         long interval = 100;
         boolean fillGaps = false;
         Collection<GyroscopeEvent> expectedRespose = new ArrayList<>();
-        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d, "Gyroscope"));
-        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.3d, 1.4d, 1.2d, "Gyroscope"));
-        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.4d, 1.5d, 1.3d, "Gyroscope"));
+        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d));
+        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.3d, 1.4d, 1.2d));
+        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.4d, 1.5d, 1.3d));
         given(gyroscopeEventRepository.findMinEventsInInterval(begin, end, interval)).willReturn(expectedRespose);
         //when
         Collection<? extends Event> response = classUnderTest.getGyroscopeMinEventsInInterval(begin, end, interval, fillGaps);
@@ -162,9 +159,9 @@ public class DatabaseHandlerTest {
         long interval = 100;
         boolean fillGaps = true;
         Collection<GyroscopeEvent> expectedRespose = new ArrayList<>();
-        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d, "Gyroscope"));
-        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.3d, 1.4d, 1.2d, "Gyroscope"));
-        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.4d, 1.5d, 1.3d, "Gyroscope"));
+        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d));
+        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.3d, 1.4d, 1.2d));
+        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.4d, 1.5d, 1.3d));
         given(gyroscopeEventRepository.findMinEventsInIntervalFillingGaps(begin, end, interval)).willReturn(expectedRespose);
         //when
         Collection<? extends Event> response = classUnderTest.getGyroscopeMinEventsInInterval(begin, end, interval, fillGaps);
@@ -180,9 +177,9 @@ public class DatabaseHandlerTest {
         long interval = 100;
         boolean fillGaps = false;
         Collection<GyroscopeEvent> expectedRespose = new ArrayList<>();
-        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d, "Gyroscope"));
-        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.3d, 1.4d, 1.2d, "Gyroscope"));
-        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.4d, 1.5d, 1.3d, "Gyroscope"));
+        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d));
+        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.3d, 1.4d, 1.2d));
+        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.4d, 1.5d, 1.3d));
         given(gyroscopeEventRepository.findLastEventsInInterval(begin, end, interval)).willReturn(expectedRespose);
         //when
         Collection<? extends Event> response = classUnderTest.getGyroscopeLastEventsInInterval(begin, end, interval, fillGaps);
@@ -198,9 +195,9 @@ public class DatabaseHandlerTest {
         long interval = 100;
         boolean fillGaps = true;
         Collection<GyroscopeEvent> expectedRespose = new ArrayList<>();
-        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d, "Gyroscope"));
-        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.3d, 1.4d, 1.2d, "Gyroscope"));
-        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.4d, 1.5d, 1.3d, "Gyroscope"));
+        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d));
+        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.3d, 1.4d, 1.2d));
+        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.4d, 1.5d, 1.3d));
         given(gyroscopeEventRepository.findLastEventsInIntervalFillingGaps(begin, end, interval)).willReturn(expectedRespose);
         //when
         Collection<? extends Event> response = classUnderTest.getGyroscopeLastEventsInInterval(begin, end, interval, fillGaps);
@@ -216,9 +213,9 @@ public class DatabaseHandlerTest {
         long interval = 100;
         boolean fillGaps = false;
         Collection<GyroscopeEvent> expectedRespose = new ArrayList<>();
-        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d, "Gyroscope"));
-        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.3d, 1.4d, 1.2d, "Gyroscope"));
-        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.4d, 1.5d, 1.3d, "Gyroscope"));
+        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d));
+        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.3d, 1.4d, 1.2d));
+        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.4d, 1.5d, 1.3d));
         given(gyroscopeEventRepository.findMedianEventsInInterval(begin, end, interval)).willReturn(expectedRespose);
         //when
         Collection<? extends Event> response = classUnderTest.getGyroscopeMedianEventsInInterval(begin, end, interval, fillGaps);
@@ -234,9 +231,9 @@ public class DatabaseHandlerTest {
         long interval = 100;
         boolean fillGaps = true;
         Collection<GyroscopeEvent> expectedRespose = new ArrayList<>();
-        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d, "Gyroscope"));
-        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.3d, 1.4d, 1.2d, "Gyroscope"));
-        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.4d, 1.5d, 1.3d, "Gyroscope"));
+        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d));
+        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.3d, 1.4d, 1.2d));
+        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.4d, 1.5d, 1.3d));
         given(gyroscopeEventRepository.findMedianEventsInIntervalFillingGaps(begin, end, interval)).willReturn(expectedRespose);
         //when
         Collection<? extends Event> response = classUnderTest.getGyroscopeMedianEventsInInterval(begin, end, interval, fillGaps);
@@ -249,7 +246,7 @@ public class DatabaseHandlerTest {
         //given
         long interval = 1000;
         Component component = Component.GYROSCOPE;
-        GyroscopeEvent expectedResponse = new GyroscopeEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d, "Gyroscope");
+        GyroscopeEvent expectedResponse = new GyroscopeEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d);
         given(gyroscopeEventRepository.findEventMeaninLastTimeUnits(interval)).willReturn(expectedResponse);
         //when
         XYZSensorEvent response = classUnderTest.getXYZSensorMeanEventInLastInterval(interval, component);
@@ -262,7 +259,7 @@ public class DatabaseHandlerTest {
         //given
         long interval = 1000;
         Component component = Component.MOTOR;
-        GyroscopeEvent expectedResponse = new GyroscopeEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d, "Gyroscope");
+        GyroscopeEvent expectedResponse = new GyroscopeEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d);
         //then
         thrown.expect(new LegoTruckExceptionMatcher(Errors.RESOURCE_NOT_FOUND, component, "last"));
         //when
@@ -275,7 +272,7 @@ public class DatabaseHandlerTest {
         //given
         long interval = 1000;
         Component component = Component.GYROSCOPE;
-        GyroscopeEvent expectedResponse = new GyroscopeEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d, "Gyroscope");
+        GyroscopeEvent expectedResponse = new GyroscopeEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d);
         given(gyroscopeEventRepository.findEventMaxinLastTimeUnits(interval)).willReturn(expectedResponse);
         //when
         XYZSensorEvent response = classUnderTest.getXYZSensorMaxEventInLastInterval(interval, component);
@@ -288,7 +285,7 @@ public class DatabaseHandlerTest {
         //given
         long interval = 1000;
         Component component = Component.GYROSCOPE;
-        GyroscopeEvent expectedResponse = new GyroscopeEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d, "Gyroscope");
+        GyroscopeEvent expectedResponse = new GyroscopeEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d);
         given(gyroscopeEventRepository.findEventMininLastTimeUnits(interval)).willReturn(expectedResponse);
         //when
         XYZSensorEvent response = classUnderTest.getXYZSensorMinEventInLastInterval(interval, component);
@@ -299,9 +296,8 @@ public class DatabaseHandlerTest {
     @Test
     public void getLastXYZSensorEvent() {
         //given
-        long interval = 1000;
         Component component = Component.GYROSCOPE;
-        GyroscopeEvent expectedResponse = new GyroscopeEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d, "Gyroscope");
+        GyroscopeEvent expectedResponse = new GyroscopeEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d);
         given(gyroscopeEventRepository.findLastEvent()).willReturn(expectedResponse);
         //when
         XYZSensorEvent response = classUnderTest.getLastXYZSensorEvent(component);
@@ -312,27 +308,23 @@ public class DatabaseHandlerTest {
     @Test
     public void getLastMotorControllerEvent() {
         //given
-
-        //then
-
+        MotorControllerEvent expectedResponse = new MotorControllerEvent(System.currentTimeMillis(), 1.2d, 1.3d);
+        given(motorControllerEventRepository.findLastEvent()).willReturn(expectedResponse);
         //when
+        MotorControllerEvent response = classUnderTest.getLastMotorControllerEvent();
+        //then
+        assertEquals(response, expectedResponse);
     }
 
     @Test
     public void getLastProximityEvent() {
         //given
-
-        //then
-
+        ProximitySensorEvent expectedResponse = new ProximitySensorEvent(System.currentTimeMillis(), 1.2d);
+        given(proximitySensorEventRepository.findLastEvent()).willReturn(expectedResponse);
         //when
+        ProximitySensorEvent response = classUnderTest.getLastProximityEvent();
+        //then
+        assertEquals(response, expectedResponse);
     }
 
-    @Test
-    public void deleteEventsInInterval() {
-        //given
-
-        //then
-
-        //when
-    }
 }

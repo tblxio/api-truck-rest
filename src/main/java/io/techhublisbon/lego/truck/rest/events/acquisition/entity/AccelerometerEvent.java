@@ -13,8 +13,8 @@ import javax.persistence.Table;
 public class AccelerometerEvent extends XYZSensorEvent {
 
 
-    public AccelerometerEvent(Object timestamp, Object x, Object y, Object z, String name) {
-        super(timestamp, x, y, z, name);
+    public AccelerometerEvent(Object timestamp, Object x, Object y, Object z) {
+        super(timestamp, x, y, z, "accelerometer");
     }
 
     public AccelerometerEvent() {

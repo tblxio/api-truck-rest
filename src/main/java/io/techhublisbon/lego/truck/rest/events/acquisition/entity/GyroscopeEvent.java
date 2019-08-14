@@ -12,8 +12,8 @@ import javax.persistence.Table;
 @Table(name = "gyroscope")
 public class GyroscopeEvent extends XYZSensorEvent {
 
-    public GyroscopeEvent(Object timestamp, Object x, Object y, Object z, String name) {
-        super(timestamp, x, y, z, name);
+    public GyroscopeEvent(Object timestamp, Object x, Object y, Object z) {
+        super(timestamp, x, y, z, "gyroscope");
     }
 
     public GyroscopeEvent() {

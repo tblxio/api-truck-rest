@@ -29,11 +29,11 @@ public class MotorControllerEvent extends Event {
     private double temperature;
     private Component name;
 
-    public MotorControllerEvent(long timestamp, Object voltage, Object temperature, String name) {
+    public MotorControllerEvent(long timestamp, Object voltage, Object temperature) {
         super(timestamp);
         this.batVoltage = (Double) voltage;
         this.temperature = (Double) temperature;
-        this.name = Component.valueOf(name.toUpperCase());
+        this.name = Component.MOTOR;
     }
 
     public MotorControllerEvent() {

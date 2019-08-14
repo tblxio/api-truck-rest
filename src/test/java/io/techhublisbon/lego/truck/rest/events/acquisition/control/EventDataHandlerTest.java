@@ -135,8 +135,8 @@ public class EventDataHandlerTest {
         final long timestamp = System.currentTimeMillis();
         final double voltage = 1.0f;
         final double temperature = 1.0f;
-        MotorControllerEvent expectedResponse = new MotorControllerEvent(timestamp, voltage, temperature, componentString);
-        given(databaseHandler.getLastMotorControllerEvent()).willReturn(new MotorControllerEvent(timestamp, voltage, temperature, componentString));
+        MotorControllerEvent expectedResponse = new MotorControllerEvent(timestamp, voltage, temperature);
+        given(databaseHandler.getLastMotorControllerEvent()).willReturn(new MotorControllerEvent(timestamp, voltage, temperature));
         //when
         Event response = classUnderTest.getTransformedEvent(interval, componentString, transformation);
         //then
@@ -152,8 +152,8 @@ public class EventDataHandlerTest {
         final String transformation = "last";
         final long timestamp = System.currentTimeMillis();
         final double distance = 1.0f;
-        ProximitySensorEvent expectedResponse = new ProximitySensorEvent(timestamp, distance, componentString);
-        given(databaseHandler.getLastProximityEvent()).willReturn(new ProximitySensorEvent(timestamp, distance, componentString));
+        ProximitySensorEvent expectedResponse = new ProximitySensorEvent(timestamp, distance);
+        given(databaseHandler.getLastProximityEvent()).willReturn(new ProximitySensorEvent(timestamp, distance));
         //when
         Event response = classUnderTest.getTransformedEvent(interval, componentString, transformation);
         //then
@@ -201,9 +201,9 @@ public class EventDataHandlerTest {
         final long sampleInterval = 100;
         boolean fillGaps = false;
         Collection<AccelerometerEvent> expectedRespose = new ArrayList<>();
-        expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d, "accelerometer"));
-        expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.3d, 1.4d, 1.2d, "accelerometer"));
-        expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.4d, 1.5d, 1.3d, "accelerometer"));
+        expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d));
+        expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.3d, 1.4d, 1.2d));
+        expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.4d, 1.5d, 1.3d));
         given(databaseHandler.getAccelerometerLastEventsInInterval(begin, end, sampleInterval, fillGaps)).willReturn(expectedRespose);
 
         Collection<? extends Event> response = classUnderTest.getTransformedEventHistory(sampleInterval, componentString, transformation, begin, end, fillGaps);
@@ -222,9 +222,9 @@ public class EventDataHandlerTest {
         final long sampleInterval = 100;
         boolean fillGaps = false;
         Collection<AccelerometerEvent> expectedRespose = new ArrayList<>();
-        expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d, "accelerometer"));
-        expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.3d, 1.4d, 1.2d, "accelerometer"));
-        expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.4d, 1.5d, 1.3d, "accelerometer"));
+        expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d));
+        expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.3d, 1.4d, 1.2d));
+        expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.4d, 1.5d, 1.3d));
         given(databaseHandler.getAccelerometerMaxEventsInInterval(begin, end, sampleInterval, fillGaps)).willReturn(expectedRespose);
 
         Collection<? extends Event> response = classUnderTest.getTransformedEventHistory(sampleInterval, componentString, transformation, begin, end, fillGaps);
@@ -243,9 +243,9 @@ public class EventDataHandlerTest {
         final long sampleInterval = 100;
         boolean fillGaps = false;
         Collection<AccelerometerEvent> expectedRespose = new ArrayList<>();
-        expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d, "accelerometer"));
-        expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.3d, 1.4d, 1.2d, "accelerometer"));
-        expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.4d, 1.5d, 1.3d, "accelerometer"));
+        expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d));
+        expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.3d, 1.4d, 1.2d));
+        expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.4d, 1.5d, 1.3d));
         given(databaseHandler.getAccelerometerMinEventsInInterval(begin, end, sampleInterval, fillGaps)).willReturn(expectedRespose);
         //when
         Collection<? extends Event> response = classUnderTest.getTransformedEventHistory(sampleInterval, componentString, transformation, begin, end, fillGaps);
@@ -265,9 +265,9 @@ public class EventDataHandlerTest {
         final long sampleInterval = 100;
         boolean fillGaps = false;
         Collection<AccelerometerEvent> expectedRespose = new ArrayList<>();
-        expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d, "accelerometer"));
-        expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.3d, 1.4d, 1.2d, "accelerometer"));
-        expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.4d, 1.5d, 1.3d, "accelerometer"));
+        expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d));
+        expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.3d, 1.4d, 1.2d));
+        expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.4d, 1.5d, 1.3d));
         given(databaseHandler.getAccelerometerMedianEventsInInterval(begin, end, sampleInterval, fillGaps)).willReturn(expectedRespose);
 
         Collection<? extends Event> response = classUnderTest.getTransformedEventHistory(sampleInterval, componentString, transformation, begin, end, fillGaps);
@@ -318,9 +318,9 @@ public class EventDataHandlerTest {
         final long begin = 1000;
         final long end = 1000;
         Collection<AccelerometerEvent> expectedRespose = new ArrayList<>();
-        expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d, "accelerometer"));
-        expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.3d, 1.4d, 1.2d, "accelerometer"));
-        expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.4d, 1.5d, 1.3d, "accelerometer"));
+        expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d));
+        expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.3d, 1.4d, 1.2d));
+        expectedRespose.add(new AccelerometerEvent(System.currentTimeMillis(), 1.4d, 1.5d, 1.3d));
         given(databaseHandler.getAccelerometerEventsInInterval(begin, end)).willReturn(expectedRespose);
         //when
         Collection<? extends Event> response = classUnderTest.getEventsInInterval(componentString, begin, end);
@@ -336,9 +336,9 @@ public class EventDataHandlerTest {
         final long begin = 1000;
         final long end = 1000;
         Collection<GyroscopeEvent> expectedRespose = new ArrayList<>();
-        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d, "accelerometer"));
-        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.3d, 1.4d, 1.2d, "accelerometer"));
-        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.4d, 1.5d, 1.3d, "accelerometer"));
+        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d));
+        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.3d, 1.4d, 1.2d));
+        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.4d, 1.5d, 1.3d));
         given(databaseHandler.getGyroscopeEventsInInterval(begin, end)).willReturn(expectedRespose);
         //when
         Collection<? extends Event> response = classUnderTest.getEventsInInterval(componentString, begin, end);
@@ -354,9 +354,9 @@ public class EventDataHandlerTest {
         final long begin = 1000;
         final long end = 1000;
         Collection<MotorControllerEvent> expectedRespose = new ArrayList<>();
-        expectedRespose.add(new MotorControllerEvent(System.currentTimeMillis(), 1.2d, 1.3d, "motor"));
-        expectedRespose.add(new MotorControllerEvent(System.currentTimeMillis(), 1.3d, 1.4d, "motor"));
-        expectedRespose.add(new MotorControllerEvent(System.currentTimeMillis(), 1.4d, 1.5d, "motor"));
+        expectedRespose.add(new MotorControllerEvent(System.currentTimeMillis(), 1.2d, 1.3d));
+        expectedRespose.add(new MotorControllerEvent(System.currentTimeMillis(), 1.3d, 1.4d));
+        expectedRespose.add(new MotorControllerEvent(System.currentTimeMillis(), 1.4d, 1.5d));
         given(databaseHandler.getMotorEventsInInterval(begin, end)).willReturn(expectedRespose);
         //when
         Collection<? extends Event> response = classUnderTest.getEventsInInterval(componentString, begin, end);
@@ -372,9 +372,9 @@ public class EventDataHandlerTest {
         final long begin = 1000;
         final long end = 1000;
         Collection<ProximitySensorEvent> expectedRespose = new ArrayList<>();
-        expectedRespose.add(new ProximitySensorEvent(System.currentTimeMillis(), 1.2d, "proximity"));
-        expectedRespose.add(new ProximitySensorEvent(System.currentTimeMillis(), 1.3d, "proximity"));
-        expectedRespose.add(new ProximitySensorEvent(System.currentTimeMillis(), 1.4d, "proximity"));
+        expectedRespose.add(new ProximitySensorEvent(System.currentTimeMillis(), 1.2d));
+        expectedRespose.add(new ProximitySensorEvent(System.currentTimeMillis(), 1.3d));
+        expectedRespose.add(new ProximitySensorEvent(System.currentTimeMillis(), 1.4d));
         given(databaseHandler.getProximityEventsInInterval(begin, end)).willReturn(expectedRespose);
         //when
         Collection<? extends Event> response = classUnderTest.getEventsInInterval(componentString, begin, end);
