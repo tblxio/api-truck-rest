@@ -28,7 +28,7 @@ public class MqttDataCallback implements MqttCallback {
     private String mqttErrorString = "Malformed MQTT message";
     private DatabaseHandler databaseHandler;
 
-    public MqttDataCallback(ComponentInfoCollection myComponents, DatabaseHandler databaseHandler) {
+    MqttDataCallback(ComponentInfoCollection myComponents, DatabaseHandler databaseHandler) {
         this.myComponents = myComponents;
         this.databaseHandler = databaseHandler;
     }
@@ -66,7 +66,7 @@ public class MqttDataCallback implements MqttCallback {
      * Handles the Component message, that contains information regarding the different components in the system,
      * creating the {@link ComponentInfo} object and adding it to the collection
      */
-    protected void handleComponentsMessage(MqttMessage message) {
+    private void handleComponentsMessage(MqttMessage message) {
         final String pollRate = "pollRate";
         try {
             JSONObject msg = new JSONObject(message.toString());
@@ -85,7 +85,7 @@ public class MqttDataCallback implements MqttCallback {
      * Handles the Imu message, that contains the measurements from the accelerometer and gyroscope,
      * creating the {@link AccelerometerEvent} and {@link GyroscopeEvent} object and adding it to the collection
      */
-    protected void handleImuMessage(MqttMessage message) {
+    private void handleImuMessage(MqttMessage message) {
         try {
             JSONObject msg = new JSONObject(message.toString());
             JSONObject accel = msg.getJSONObject("accel");
@@ -105,7 +105,7 @@ public class MqttDataCallback implements MqttCallback {
      * Handles the Motor message, that contains information regarding the state of the SBrick Controller,
      * creating the {@link MotorControllerEvent} object and adding it to the collection
      */
-    protected void handleMotorMessage(MqttMessage message) {
+    private void handleMotorMessage(MqttMessage message) {
         try {
             JSONObject msg = new JSONObject(message.toString());
             JSONObject respMsg = msg.getJSONObject("resp_msg");
@@ -121,7 +121,7 @@ public class MqttDataCallback implements MqttCallback {
      * Handles the Motor message, that contains information regarding the state of the SBrick Controller,
      * creating the {@link MotorControllerEvent} object and adding it to the collection
      */
-    protected void handleProximityMessage(MqttMessage message) {
+    private void handleProximityMessage(MqttMessage message) {
         try {
             JSONObject msg = new JSONObject(message.toString());
             long timestamp = (long) msg.get("timestamp");
@@ -133,7 +133,7 @@ public class MqttDataCallback implements MqttCallback {
         }
     }
 
-    protected void handleCameraMessage(MqttMessage message) {
+    private void handleCameraMessage(MqttMessage message) {
         try {
             JSONObject msg = new JSONObject(message.toString());
             String ip = (String) msg.get("stream_ip");

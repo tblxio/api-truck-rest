@@ -1,3 +1,6 @@
+
+CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;
+
 CREATE TABLE motor(
     timestamp bigint PRIMARY KEY NOT NULL,
     name integer,
@@ -8,7 +11,7 @@ CREATE TABLE motor(
 CREATE TABLE proximity(
     timestamp bigint PRIMARY KEY NOT NULL,
     name integer,
-    distance DOUBLE PRECISION NOT NULL,
+    distance DOUBLE PRECISION NOT NULL
 );
 
 CREATE TABLE gyroscope(
@@ -26,7 +29,7 @@ CREATE TABLE accelerometer(
     y DOUBLE PRECISION ,
     z DOUBLE PRECISION
 );
--- Set chunck time interval to 1 hour
+-- Set chunk time interval to 1 hour
 SELECT create_hypertable('accelerometer', 'timestamp', chunk_time_interval => 3600000);
 SELECT create_hypertable('gyroscope', 'timestamp', chunk_time_interval => 3600000);
 SELECT create_hypertable('motor', 'timestamp', chunk_time_interval => 3600000);

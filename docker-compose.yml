@@ -13,6 +13,11 @@ services:
       - MQTT_PORT=1883
       - MQTT_USER=demo
       - MQTT_PASS=demo
+      - DB_USER=demouser
+      - DB_PASS=demopass
+      - DB_HOST=mypostgres
+      - DB_NAME=mydb
+      - DB_PORT=5432
     ports:
       - "8080:8080"
       - "3000:3000"
