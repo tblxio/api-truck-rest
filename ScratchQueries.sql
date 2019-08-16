@@ -1,9 +1,8 @@
 WITH aggregation as
-            (select case :
-            time_bucket_gapfill(:interval ,timestamp, :begin, :end) as interval, MAX(name) AS name,
-            AVG(x) AS x, AVG(y) AS y, AVG(z) AS z from #{#entityName}
-            where timestamp between :begin and :end group by interval
-            order by interval desc)            SELECT interval as timestamp, name, x,y,z from aggregation,
+            (select *,
+            time_bucket(1000000,timestamp) as interval,
+            where timestamp between 0 and 100000000 group by interval
+            order by interval desc)            SELECT interval as timestamp, name, x,y,z from aggregation;
 
 -- Mode x,y,z
 WITH aggregation as (

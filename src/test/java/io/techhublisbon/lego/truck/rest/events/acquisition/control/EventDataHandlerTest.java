@@ -21,6 +21,7 @@ import java.util.Collection;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class EventDataHandlerTest {
@@ -305,7 +306,7 @@ public class EventDataHandlerTest {
         boolean fillGaps = false;
         given(databaseHandler.getAccelerometerMaxEventsInInterval(begin, end, sampleInterval, fillGaps)).willReturn(null);
         //then
-        thrown.expect(new LegoTruckExceptionMatcher(Errors.RESOURCE_NOT_FOUND, component, "last"));
+        thrown.expect(new LegoTruckExceptionMatcher(Errors.INVALID_PARAMETER));
         //when
         classUnderTest.getTransformedEventHistory(sampleInterval, componentString, transformation, begin, end, fillGaps);
     }
@@ -391,5 +392,6 @@ public class EventDataHandlerTest {
         final long end = 1000;
 
         classUnderTest.deleteEventsInInterval(componentString, begin, end);
+        verify(databaseHandler).deleteEventsInInterval(component, begin, end);
     }
 }

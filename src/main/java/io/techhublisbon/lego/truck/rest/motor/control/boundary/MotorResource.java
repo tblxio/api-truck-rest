@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
  * battery state and temperature of the controller
  */
 @RestController
-@Api(description = "Operations pertaining the control and operation of the Lego truck motors")
+@Api("Operations pertaining the control and operation of the Lego truck motors")
 public class MotorResource {
 
     private InputValidator inputValidator;

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@Api(description = "Operations pertaining the acquisition of information about the components in the system")
+@Api("Operations pertaining the acquisition of information about the components in the system")
 public class ComponentsResource {
 
     private InputValidator inputValidator;

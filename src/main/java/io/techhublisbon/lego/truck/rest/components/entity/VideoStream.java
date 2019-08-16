@@ -6,16 +6,16 @@ import lombok.Setter;
 @Setter
 @Getter
 public class VideoStream {
-    private final Component name = Component.CAMERA;
-    private String VideoStreamIp;
-    private String VideoStreamPort;
+    private static final Component name = Component.CAMERA;
+    private String videoStreamIp;
+    private String videoStreamPort;
 
     public VideoStream(String videoStreamIp, String videoStreamPort) {
-        VideoStreamIp = videoStreamIp;
-        VideoStreamPort = videoStreamPort;
+        this.videoStreamIp = videoStreamIp;
+        this.videoStreamPort = videoStreamPort;
     }
 
     public String getVideoStreamURL() {
-        return "http://" + VideoStreamIp + ":" + VideoStreamPort;
+        return "http://" + videoStreamIp + ":" + videoStreamPort;
     }
 }

@@ -25,7 +25,7 @@ public class ProximitySensorEvent extends Event {
      * the SBrick.
      */
     private double distance;
-    private Component name;
+
 
     public ProximitySensorEvent(Object timestamp, Object distance) {
         super((long) timestamp);

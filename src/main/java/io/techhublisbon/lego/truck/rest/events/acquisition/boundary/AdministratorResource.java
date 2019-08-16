@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.ZonedDateTime;
 
 @RestController
-@Api(description = "Operations pertaining the acquisition of historical data of the events")
+@Api("Administration functions")
 public class AdministratorResource {
 
     private InputValidator inputValidator;

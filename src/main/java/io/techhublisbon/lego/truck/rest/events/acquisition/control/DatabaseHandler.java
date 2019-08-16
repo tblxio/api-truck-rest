@@ -113,14 +113,26 @@ public class DatabaseHandler {
         return accelerometerEventRepository.findLastEventsInInterval(begin, end, interval);
     }
 
+    Collection<MotorControllerEvent> getMotorControllerLastEventsInInterval(long begin, long end, long interval, boolean fillGaps) {
+        if (fillGaps) return motorControllerEventRepository.findLastEventsInIntervalFillingGaps(begin, end, interval);
+        return motorControllerEventRepository.findLastEventsInInterval(begin, end, interval);
+    }
+
+    Collection<ProximitySensorEvent> getProximityLastEventsInInterval(long begin, long end, long interval, boolean fillGaps) {
+        if (fillGaps) return proximitySensorEventRepository.findLastEventsInIntervalFillingGaps(begin, end, interval);
+        return proximitySensorEventRepository.findLastEventsInInterval(begin, end, interval);
+    }
+
     XYZSensorEvent getXYZSensorMeanEventInLastInterval(long interval, Component component) {
         switch (component) {
             case GYROSCOPE:
                 return gyroscopeEventRepository.findEventMeaninLastTimeUnits(interval);
             case ACCELEROMETER:
                 return accelerometerEventRepository.findEventMeaninLastTimeUnits(interval);
+            default:
+                throw new LegoTruckException(Errors.RESOURCE_NOT_FOUND, component, "mean");
+
         }
-        throw new LegoTruckException(Errors.RESOURCE_NOT_FOUND, component, "last");
     }
 
     XYZSensorEvent getXYZSensorMaxEventInLastInterval(long interval, Component component) {
@@ -130,8 +142,9 @@ public class DatabaseHandler {
                 return gyroscopeEventRepository.findEventMaxinLastTimeUnits(interval);
             case ACCELEROMETER:
                 return accelerometerEventRepository.findEventMaxinLastTimeUnits(interval);
+            default:
+                throw new LegoTruckException(Errors.RESOURCE_NOT_FOUND, component);
         }
-        throw new LegoTruckException(Errors.RESOURCE_NOT_FOUND, component);
 
     }
 
@@ -142,8 +155,10 @@ public class DatabaseHandler {
                 return gyroscopeEventRepository.findEventMininLastTimeUnits(interval);
             case ACCELEROMETER:
                 return accelerometerEventRepository.findEventMininLastTimeUnits(interval);
+            default:
+                throw new LegoTruckException(Errors.RESOURCE_NOT_FOUND, component);
         }
-        throw new LegoTruckException(Errors.RESOURCE_NOT_FOUND, component);
+
     }
 
     XYZSensorEvent getLastXYZSensorEvent(Component component) {
@@ -152,8 +167,9 @@ public class DatabaseHandler {
                 return gyroscopeEventRepository.findLastEvent();
             case ACCELEROMETER:
                 return accelerometerEventRepository.findLastEvent();
+            default:
+                throw new LegoTruckException(Errors.RESOURCE_NOT_FOUND, component);
         }
-        throw new LegoTruckException(Errors.RESOURCE_NOT_FOUND, component);
     }
 
     MotorControllerEvent getLastMotorControllerEvent() {
@@ -168,12 +184,18 @@ public class DatabaseHandler {
         switch (component) {
             case GYROSCOPE:
                 gyroscopeEventRepository.deleteEventsInInterval(begin, end);
+                break;
             case ACCELEROMETER:
                 accelerometerEventRepository.deleteEventsInInterval(begin, end);
+                break;
             case MOTOR:
                 motorControllerEventRepository.deleteEventsInInterval(begin, end);
+                break;
             case PROXIMITY:
                 proximitySensorEventRepository.deleteEventsInInterval(begin, end);
+                break;
+            default:
+                throw new LegoTruckException(Errors.INVALID_PARAMETER, component);
         }
     }
 

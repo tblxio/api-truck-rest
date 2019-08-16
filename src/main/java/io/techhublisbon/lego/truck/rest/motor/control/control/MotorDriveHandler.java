@@ -2,6 +2,8 @@ package io.techhublisbon.lego.truck.rest.motor.control.control;
 
 import io.techhublisbon.lego.truck.rest.MqttHandler;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
@@ -14,9 +16,10 @@ import org.springframework.stereotype.Component;
 @DependsOn("MqttHandler")
 public class MotorDriveHandler {
 
-    private final String driveTopic = "sbrick/01/sp/drive";
-    private final String sbrickId = "88:6B:0F:80:29:D1";
-    private final float exec_time = 15f;
+    private static final String DRIVE_TOPIC = "sbrick/01/sp/drive";
+    private static final String SBRICK_ID = "88:6B:0F:80:29:D1";
+    private static final float EXECUTION_TIME = 15f;
+    private static final Logger LOG = LoggerFactory.getLogger(MotorDriveHandler.class);
     private MqttHandler myMqttHandler;
 
     @Autowired
@@ -38,14 +41,14 @@ public class MotorDriveHandler {
     private JSONObject generateDrivePayload(String channel, String direction, int power) {
         JSONObject payload = new JSONObject();
         try {
-            payload.put("sbrick_id", sbrickId);
+            payload.put("sbrick_id", SBRICK_ID);
             payload.put("channel", channel);
             payload.put("direction", direction);
             payload.put("power", String.format("%02x", power));
-            payload.put("exec_time", exec_time);
+            payload.put("exec_time", EXECUTION_TIME);
             payload.put("timestamp", System.currentTimeMillis());
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Exception: ", e);
         }
 
         return payload;
@@ -59,7 +62,7 @@ public class MotorDriveHandler {
      * @param motion The motion requested, either linear or angular
      * @param power  The power to be given to the motor
      */
-    public void drive(String motion, int power) throws IllegalArgumentException {
+    public void drive(String motion, int power) {
         String channel;
         String direction;
         power *= 2.55; // Convert from 0-100 to 0-255
@@ -67,7 +70,7 @@ public class MotorDriveHandler {
         channel = (motion.equals("linear")) ? "02" : "00";
         JSONObject payload = generateDrivePayload(channel, direction, Math.abs(power));
 
-        myMqttHandler.publishJson(payload, driveTopic);
+        myMqttHandler.publishJson(payload, DRIVE_TOPIC);
     }
 
 

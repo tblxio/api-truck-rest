@@ -62,6 +62,54 @@ public class DatabaseHandlerTest {
     }
 
     @Test
+    public void getGyroscopeEventsInInterval() {
+        //given
+        long begin = 1000;
+        long end = 1001;
+        Collection<GyroscopeEvent> expectedRespose = new ArrayList<>();
+        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d));
+        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.3d, 1.4d, 1.2d));
+        expectedRespose.add(new GyroscopeEvent(System.currentTimeMillis(), 1.4d, 1.5d, 1.3d));
+        given(gyroscopeEventRepository.findEventsInInterval(begin, end)).willReturn(expectedRespose);
+        //when
+        Collection<? extends Event> response = classUnderTest.getGyroscopeEventsInInterval(begin, end);
+        //then
+        assertEquals(response, expectedRespose);
+    }
+
+    @Test
+    public void getMotorEventsInInterval() {
+        //given
+        long begin = 1000;
+        long end = 1001;
+        Collection<MotorControllerEvent> expectedRespose = new ArrayList<>();
+        expectedRespose.add(new MotorControllerEvent(System.currentTimeMillis(), 1.2d, 1.3d));
+        expectedRespose.add(new MotorControllerEvent(System.currentTimeMillis(), 1.3d, 1.4d));
+        expectedRespose.add(new MotorControllerEvent(System.currentTimeMillis(), 1.4d, 1.5d));
+        given(motorControllerEventRepository.findEventsInInterval(begin, end)).willReturn(expectedRespose);
+        //when
+        Collection<? extends Event> response = classUnderTest.getMotorEventsInInterval(begin, end);
+        //then
+        assertEquals(response, expectedRespose);
+    }
+
+    @Test
+    public void getProximityEventsInInterval() {
+        //given
+        long begin = 1000;
+        long end = 1001;
+        Collection<ProximitySensorEvent> expectedRespose = new ArrayList<>();
+        expectedRespose.add(new ProximitySensorEvent(System.currentTimeMillis(), 1.2d));
+        expectedRespose.add(new ProximitySensorEvent(System.currentTimeMillis(), 1.3d));
+        expectedRespose.add(new ProximitySensorEvent(System.currentTimeMillis(), 1.4d));
+        given(proximitySensorEventRepository.findEventsInInterval(begin, end)).willReturn(expectedRespose);
+        //when
+        Collection<? extends Event> response = classUnderTest.getProximityEventsInInterval(begin, end);
+        //then
+        assertEquals(response, expectedRespose);
+    }
+
+    @Test
     public void getGyroscopeMeanEventsInInterval() {
         //given
         long begin = 1000;
@@ -78,6 +126,7 @@ public class DatabaseHandlerTest {
         //then
         assertEquals(response, expectedRespose);
     }
+
 
     @Test
     public void getGyroscopeMeanEventsInIntervalFillGaps() {
@@ -242,12 +291,25 @@ public class DatabaseHandlerTest {
     }
 
     @Test
-    public void getXYZSensorMeanEventInLastInterval() {
+    public void getXYZSensorMeanEventInLastIntervalGyroscope() {
         //given
         long interval = 1000;
         Component component = Component.GYROSCOPE;
         GyroscopeEvent expectedResponse = new GyroscopeEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d);
         given(gyroscopeEventRepository.findEventMeaninLastTimeUnits(interval)).willReturn(expectedResponse);
+        //when
+        XYZSensorEvent response = classUnderTest.getXYZSensorMeanEventInLastInterval(interval, component);
+        //then
+        assertEquals(response, expectedResponse);
+    }
+
+    @Test
+    public void getXYZSensorMeanEventInLastIntervalAccelerometer() {
+        //given
+        long interval = 1000;
+        Component component = Component.ACCELEROMETER;
+        AccelerometerEvent expectedResponse = new AccelerometerEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d);
+        given(accelerometerEventRepository.findEventMeaninLastTimeUnits(interval)).willReturn(expectedResponse);
         //when
         XYZSensorEvent response = classUnderTest.getXYZSensorMeanEventInLastInterval(interval, component);
         //then

@@ -23,4 +23,6 @@ public interface EventRepository<T extends Event> extends CrudRepository<T, Long
     @Transactional
     @Query(value = "DELETE FROM #{#entityName} where timestamp between :begin and :end ;", nativeQuery = true)
     void deleteEventsInInterval(@Param("begin") long begin, @Param("end") long end);
+
+
 }

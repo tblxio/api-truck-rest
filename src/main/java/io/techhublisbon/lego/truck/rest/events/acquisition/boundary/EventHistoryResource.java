@@ -16,7 +16,7 @@ import java.time.ZonedDateTime;
 import java.util.Collection;
 
 @RestController
-@Api(description = "Operations pertaining the acquisition of historical data of the events")
+@Api("Operations pertaining the acquisition of historical data of the events")
 public class EventHistoryResource {
 
     private EventDataHandler eventDataHandler;
@@ -54,19 +54,6 @@ public class EventHistoryResource {
         Collection<? extends Event> events = eventDataHandler.getTransformedEventHistory(sampling, component, transformation, begin, end, fillGaps);
         return ResponseEntity.ok().body(events);
     }
-
-//    @DeleteMapping("/events/history")
-//    public ResponseEntity<String> deleteEventHistoryFromComponent(@RequestParam String component,
-//                                                                  @RequestParam(name = "from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime from,
-//                                                                  @RequestParam(name = "to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime to) {
-//        long begin = from.toInstant().toEpochMilli();
-//        long end = to.toInstant().toEpochMilli();
-//        inputValidator.checkValidComponent(component);
-//        inputValidator.checkThatBeginIsBeforeEnd(begin, end);
-//
-//        eventDataHandler.deleteEventsInInterval(component, begin, end);
-//        return ResponseEntity.ok().body("Deleted");
-//    }
 
 
 }

@@ -1,17 +1,36 @@
+CREATE TABLE motor(
+    timestamp bigint PRIMARY KEY NOT NULL,
+    name integer,
+    bat_voltage DOUBLE PRECISION NOT NULL,
+    temperature DOUBLE PRECISION NOT NULL
+);
 
-delete from accelerometer where timestamp>0;
-delete from gyroscope where timestamp>0;
-delete from motor where timestamp>0;
-delete from proximity where timestamp>0;
+CREATE TABLE proximity(
+    timestamp bigint PRIMARY KEY NOT NULL,
+    name integer,
+    distance DOUBLE PRECISION NOT NULL,
+);
 
+CREATE TABLE gyroscope(
+    timestamp bigint PRIMARY KEY NOT NULL,
+    name integer,
+    x DOUBLE PRECISION ,
+    y DOUBLE PRECISION ,
+    z DOUBLE PRECISION
+);
+
+CREATE TABLE accelerometer(
+    timestamp bigint PRIMARY KEY NOT NULL,
+    name integer,
+    x DOUBLE PRECISION ,
+    y DOUBLE PRECISION ,
+    z DOUBLE PRECISION
+);
 -- Set chunck time interval to 1 hour
 SELECT create_hypertable('accelerometer', 'timestamp', chunk_time_interval => 3600000);
 SELECT create_hypertable('gyroscope', 'timestamp', chunk_time_interval => 3600000);
 SELECT create_hypertable('motor', 'timestamp', chunk_time_interval => 3600000);
 SELECT create_hypertable('proximity', 'timestamp', chunk_time_interval => 3600000);
 
-select set_chunk_time_interval('accelerometer', 3600000);
-select set_chunk_time_interval('gyroscope', 3600000);
-select set_chunk_time_interval('motor', 3600000);
 
 

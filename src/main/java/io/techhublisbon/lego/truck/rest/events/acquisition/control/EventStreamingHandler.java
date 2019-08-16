@@ -3,6 +3,8 @@ package io.techhublisbon.lego.truck.rest.events.acquisition.control;
 import io.techhublisbon.lego.truck.rest.errors.Errors;
 import io.techhublisbon.lego.truck.rest.events.acquisition.entity.Event;
 import io.techhublisbon.lego.truck.rest.events.acquisition.entity.LegoTruckException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.core.MessageSendingOperations;
@@ -23,6 +25,7 @@ import java.util.concurrent.ConcurrentMap;
 @Component
 public class EventStreamingHandler {
 
+    private static final Logger LOG = LoggerFactory.getLogger(EventStreamingHandler.class);
     private final MessageSendingOperations<String> messagingTemplate;
     /**
      * Used to save the information on the subscribed clients in order to stop streaming when they disconnect from the
@@ -31,14 +34,12 @@ public class EventStreamingHandler {
      */
     private ConcurrentMap<String, String> subscriptions;
     private EventDataHandler eventDataHandler;
-    private Random random;
 
     @Autowired
     public EventStreamingHandler(MessageSendingOperations<String> messagingTemplate, EventDataHandler eventDataHandler) {
         this.messagingTemplate = messagingTemplate;
         this.subscriptions = new ConcurrentHashMap<>();
         this.eventDataHandler = eventDataHandler;
-        this.random = new Random();
     }
 
 
@@ -88,6 +89,7 @@ public class EventStreamingHandler {
                 }
                 Thread.sleep(interval);
             } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
                 throw new LegoTruckException(Errors.INTERNAL_SERVER_ERROR);
             }
         } while (this.subscriptions.containsKey(sessionId));
@@ -104,7 +106,7 @@ public class EventStreamingHandler {
     public void onDisconnectApplicationEvent(SessionDisconnectEvent event) {
         SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(event.getMessage());
         this.subscriptions.remove(headers.getSessionId());
-        System.out.println(headers.getSessionId() + " has disconnected");
+        LOG.info("{} has disconnected", headers.getSessionId());
     }
 
     /**
@@ -118,7 +120,7 @@ public class EventStreamingHandler {
     public void onUnsubscribeApplicationEvent(SessionUnsubscribeEvent event) {
         SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(event.getMessage());
         this.subscriptions.remove(headers.getSessionId());
-        System.out.println(headers.getSessionId() + " has unsubscribed");
+        LOG.info("{} has unsubscribed", headers.getSessionId());
     }
 
     /**

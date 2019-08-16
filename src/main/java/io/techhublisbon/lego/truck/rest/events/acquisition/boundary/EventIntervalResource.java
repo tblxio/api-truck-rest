@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@Api(value = "Interval", description = "Operations pertaining to events in the last X time units")
+@Api("Operations pertaining to events in the last X time units")
 public class EventIntervalResource {
 
     private EventDataHandler eventDataHandler;

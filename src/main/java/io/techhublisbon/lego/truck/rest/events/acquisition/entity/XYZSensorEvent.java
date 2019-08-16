@@ -4,6 +4,8 @@ import io.techhublisbon.lego.truck.rest.components.entity.Component;
 import lombok.Getter;
 import lombok.Setter;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.repository.NoRepositoryBean;
 
 import javax.persistence.Entity;
@@ -23,6 +25,7 @@ import java.util.Objects;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class XYZSensorEvent extends Event {
 
+    private static final Logger LOG = LoggerFactory.getLogger(XYZSensorEvent.class);
     /**
      * The fields contain the timestamp, which is unique between
      * events and it is used as the primary key for the DB storage,
@@ -31,7 +34,7 @@ public class XYZSensorEvent extends Event {
     private Double x;
     private Double y;
     private Double z;
-    private Component name;
+
 
     public XYZSensorEvent(Object timestamp, Object x, Object y, Object z, String name) {
         super((long) timestamp);
@@ -59,7 +62,7 @@ public class XYZSensorEvent extends Event {
             payload.put("z", z);
             payload.put("timestamp", super.getTimestamp());
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Exception: ", e);
         }
 
         return payload;

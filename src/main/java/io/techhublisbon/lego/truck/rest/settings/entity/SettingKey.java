@@ -11,11 +11,6 @@ public enum SettingKey {
         this.defaultValue = null;
     }
 
-    SettingKey(final String key, final String defaultValue) {
-        this.key = key;
-        this.defaultValue = defaultValue;
-    }
-
     public String getKey() {
         return key;
     }

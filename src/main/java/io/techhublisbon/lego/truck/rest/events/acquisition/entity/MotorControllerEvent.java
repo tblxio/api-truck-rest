@@ -3,7 +3,8 @@ package io.techhublisbon.lego.truck.rest.events.acquisition.entity;
 import io.techhublisbon.lego.truck.rest.components.entity.Component;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -19,6 +20,7 @@ import java.util.Objects;
 @Entity(name = "motor")
 @Table(name = "motor")
 public class MotorControllerEvent extends Event {
+    private static final Logger LOG = LoggerFactory.getLogger(MotorControllerEvent.class);
     /**
      * The fields contain the timestamp, which is unique between
      * events and it is used as the primary key for the DB storage,
@@ -27,7 +29,7 @@ public class MotorControllerEvent extends Event {
      */
     private double batVoltage;
     private double temperature;
-    private Component name;
+
 
     public MotorControllerEvent(long timestamp, Object voltage, Object temperature) {
         super(timestamp);
@@ -45,32 +47,13 @@ public class MotorControllerEvent extends Event {
         return "MotorControllerEvent{" + "batVoltage=" + batVoltage + ", temperature=" + temperature + ", timestamp=" + timestamp + ", name=" + name + '}';
     }
 
-    /**
-     * Implementation of the toJson function from the interface
-     * for this particular type of sensor event
-     *
-     * @return The Json form of the event
-     */
-    public JSONObject toJson() {
-        JSONObject payload = new JSONObject();
-        try {
-            payload.put("name", name);
-            payload.put("voltage", batVoltage);
-            payload.put("temperature", temperature);
-            payload.put("timestamp", super.getTimestamp());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return payload;
-    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof MotorControllerEvent)) return false;
         MotorControllerEvent that = (MotorControllerEvent) o;
-        return Double.compare(that.getBatVoltage(), getBatVoltage()) == 0 && Double.compare(that.getTemperature(), getTemperature()) == 0 && getName() == that.getName();
+        return Double.compare(that.getBatVoltage(), getBatVoltage()) == 0 && Double.compare(that.getTemperature(), getTemperature()) == 0 && this.getName() == that.getName();
     }
 
     @Override

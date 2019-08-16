@@ -5,6 +5,8 @@ import io.techhublisbon.lego.truck.rest.settings.control.MqttConfig;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.net.InetAddress;
@@ -18,6 +20,8 @@ import java.nio.charset.StandardCharsets;
  */
 @Component("MqttHandler")
 public class MqttHandler extends MqttClient {
+
+    private static final Logger LOG = LoggerFactory.getLogger(MqttHandler.class);
 
     /**
      * The class constructor that perform the connection to the Mqtt broker
@@ -42,13 +46,11 @@ public class MqttHandler extends MqttClient {
      *
      * @param me The thrown MqttException to be handled
      */
-    public static void handle_execp_gracefully(MqttException me) {
-        System.out.println("reason " + me.getReasonCode());
-        System.out.println("msg " + me.getMessage());
-        System.out.println("loc " + me.getLocalizedMessage());
-        System.out.println("cause " + me.getCause());
-        System.out.println("excep " + me);
-        me.printStackTrace();
+    public static void handleGracefully(MqttException me) {
+        LOG.debug("reason {}", me.getReasonCode());
+        LOG.debug("msg {}", me.getMessage());
+        LOG.debug("loc {}", me.getLocalizedMessage());
+        LOG.error("MqttException : ", me);
     }
 
     /**
@@ -63,9 +65,9 @@ public class MqttHandler extends MqttClient {
         try {
             this.publish(topic, message);
         } catch (MqttPersistenceException e) {
-            e.printStackTrace();
+            LOG.error("Exception : ", e);
         } catch (MqttException e) {
-            handle_execp_gracefully(e);
+            handleGracefully(e);
         }
     }
 
@@ -79,7 +81,7 @@ public class MqttHandler extends MqttClient {
         try {
             ip = InetAddress.getLocalHost().getHostAddress() + ":8080/joystick";
         } catch (UnknownHostException e) {
-            e.printStackTrace();
+            LOG.error("Exception : ", e);
         }
         MqttMessage message = new MqttMessage(ip.getBytes());
         message.setRetained(true);

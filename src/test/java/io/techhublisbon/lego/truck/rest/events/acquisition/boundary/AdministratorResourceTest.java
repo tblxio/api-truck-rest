@@ -11,11 +11,13 @@ import org.junit.rules.ExpectedException;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
+import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class AdministratorResourceTest {
@@ -42,8 +44,11 @@ public class AdministratorResourceTest {
         final String component = "motor";
         final ZonedDateTime from = ZonedDateTime.of(LocalDateTime.of(2017, 1, 1, 0, 0, 0), ZoneId.of("Z"));
         final ZonedDateTime to = ZonedDateTime.of(LocalDateTime.of(2017, 1, 1, 0, 0, 1), ZoneId.of("Z"));
+        final ResponseEntity<String> expectedResult = ResponseEntity.ok().body("Deleted");
         //when
-        administratorResourceUnderTest.deleteEventHistoryFromComponent(component, from, to);
+        final ResponseEntity<String> result = administratorResourceUnderTest.deleteEventHistoryFromComponent(component, from, to);
+        //then
+        assertEquals(expectedResult, result);
     }
 
     @Test

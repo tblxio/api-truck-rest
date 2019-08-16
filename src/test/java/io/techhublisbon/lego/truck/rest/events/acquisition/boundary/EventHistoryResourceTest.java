@@ -1,5 +1,6 @@
 package io.techhublisbon.lego.truck.rest.events.acquisition.boundary;
 
+
 import io.techhublisbon.lego.truck.rest.LegoTruckExceptionMatcher;
 import io.techhublisbon.lego.truck.rest.errors.Errors;
 import io.techhublisbon.lego.truck.rest.errors.InputValidator;
