@@ -11,15 +11,8 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class InputValidator {
 
-    private ComponentInfoCollection componentInfoCollection;
-
     @Autowired
-    public InputValidator(ComponentInfoCollection componentInfoCollection) {
-        this.componentInfoCollection = componentInfoCollection;
-    }
-
-    public InputValidator() {
-    }
+    private ComponentInfoCollection componentInfoCollection;
 
     public void checkValidComponent(String requestedComponent) {
         try {

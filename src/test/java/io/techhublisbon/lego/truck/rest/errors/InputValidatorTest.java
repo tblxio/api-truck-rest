@@ -1,126 +1,136 @@
 package io.techhublisbon.lego.truck.rest.errors;
 
+import io.techhublisbon.lego.truck.rest.LegoTruckExceptionMatcher;
 import io.techhublisbon.lego.truck.rest.components.entity.Component;
 import io.techhublisbon.lego.truck.rest.components.entity.ComponentInfo;
 import io.techhublisbon.lego.truck.rest.components.entity.ComponentInfoCollection;
-import io.techhublisbon.lego.truck.rest.events.acquisition.entity.LegoTruckException;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import io.techhublisbon.lego.truck.rest.components.entity.Transformation;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 
-@ExtendWith(MockitoExtension.class)
-class InputValidatorTest {
-
+public class InputValidatorTest {
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
     @Mock
     private ComponentInfoCollection componentInfo;
 
     @InjectMocks
     private InputValidator inputValidator;
 
-
-    @Test
-    void checkValidComponentFail() {
-        assertThrows(LegoTruckException.class, () -> {
-            inputValidator.checkValidComponent("fake");
-        });
+    @Before
+    public void setUp() {
+        initMocks(this);
     }
 
     @Test
-    void checkValidTransformationFail() {
-        assertThrows(LegoTruckException.class, () -> {
-            inputValidator.checkValidTransformation("fake");
-        });
+    public void checkValidComponentFail() {
+        String componentString = "fake";
+        thrown.expect(new LegoTruckExceptionMatcher(Errors.INVALID_PARAMETER, componentString));
+        inputValidator.checkValidComponent(componentString);
     }
 
     @Test
-    void checkThatBeginIsBeforeEndFail() {
-        assertThrows(LegoTruckException.class, () -> {
-            inputValidator.checkThatBeginIsBeforeEnd(System.currentTimeMillis(), System.currentTimeMillis() - 1);
-        });
+    public void checkValidTransformationFail() {
+        String transformationString = "fake";
+        thrown.expect(new LegoTruckExceptionMatcher(Errors.INVALID_PARAMETER, transformationString));
+        inputValidator.checkValidTransformation(transformationString);
     }
 
     @Test
-    void checkThatIntervalIsBiggerThanStorageIntervalFail() {
-        Mockito.when(componentInfo.getComponentInfo(any(Component.class))).thenReturn(new ComponentInfo("motor", 1.0));
-        assertThrows(LegoTruckException.class, () -> {
-            inputValidator.checkThatIntervalIsBiggerThanStorageInterval("motor", 10);
-        });
+    public void checkThatBeginIsBeforeEndFail() {
+        thrown.expect(new LegoTruckExceptionMatcher(Errors.INVALID_PARAMETER, "'begin' must be before 'end'"));
+        inputValidator.checkThatBeginIsBeforeEnd(System.currentTimeMillis(), System.currentTimeMillis() - 1);
     }
 
     @Test
-    void checkValidStreamingComponentsFail() {
-        assertThrows(LegoTruckException.class, () -> {
-            inputValidator.checkValidStreamingComponents("motor", "mean");
-        });
+    public void checkThatIntervalIsBiggerThanStorageIntervalFail() {
+        given(componentInfo.getComponentInfo(any(Component.class))).willReturn(new ComponentInfo("motor", 1.0));
+        thrown.expect(new LegoTruckExceptionMatcher(Errors.INVALID_PARAMETER, "interval requested is smaller than acquisition interval"));
+        inputValidator.checkThatIntervalIsBiggerThanStorageInterval("motor", 10);
     }
 
     @Test
-    void checkValidComponentTransformationPairFail() {
-        assertThrows(LegoTruckException.class, () -> {
-            inputValidator.checkValidComponentTransformationPair("motor", "mean");
-        });
+    public void checkValidStreamingComponentsFail() {
+        String componentString = "motor";
+        String transformationString = "mean";
+        Component component = Component.MOTOR;
+        Transformation transformation = Transformation.MEAN;
+        thrown.expect(new LegoTruckExceptionMatcher(Errors.RESOURCE_NOT_FOUND, component, transformation));
+        inputValidator.checkValidStreamingComponents(componentString, transformationString);
     }
 
     @Test
-    void checkValidTransformationTest() {
+    public void checkValidComponentTransformationPairFail() {
+        String componentString = "motor";
+        String transformationString = "mean";
+        Component component = Component.MOTOR;
+        Transformation transformation = Transformation.MEAN;
+        thrown.expect(new LegoTruckExceptionMatcher(Errors.RESOURCE_NOT_FOUND, component, transformation));
+        inputValidator.checkValidComponentTransformationPair(componentString, transformationString);
+    }
+
+    @Test
+    public void checkValidTransformationSuccess() {
         inputValidator.checkValidTransformation("mean");
     }
 
     @Test
-    void checkValidComponent() {
+    public void checkValidComponentSuccess() {
         inputValidator.checkValidComponent("motor");
     }
 
     @Test
-    void checkThatBeginIsBeforeEnd() {
+    public void checkThatBeginIsBeforeEndSuccess() {
         inputValidator.checkThatBeginIsBeforeEnd(System.currentTimeMillis() - 1, System.currentTimeMillis());
     }
 
     @Test
-    void checkThatIntervalIsBiggerThanStorageInterval() {
-        Mockito.when(componentInfo.getComponentInfo(any(Component.class))).thenReturn(new ComponentInfo("motor", 1.0));
+    public void checkThatIntervalIsBiggerThanStorageIntervalSuccess() {
+        given(componentInfo.getComponentInfo(any(Component.class))).willReturn(new ComponentInfo("motor", 1.0));
         inputValidator.checkThatIntervalIsBiggerThanStorageInterval("motor", 2000);
     }
 
     @Test
-    void checkValidComponentTransformationPair() {
+    public void checkValidComponentTransformationPairSuccess() {
         inputValidator.checkValidComponentTransformationPair("motor", "last");
     }
 
     @Test
-    void checkValidStreamingComponents() {
+    public void checkValidStreamingComponentsSuccess() {
         inputValidator.checkValidStreamingComponents("motor", "last");
     }
 
     @Test
-    void checkValidMotorMotionSuccess() {
+    public void checkValidMotorMotionSuccessSuccess() {
         inputValidator.checkValidMotorMotion("linear");
     }
 
     @Test
-    void checkValidMotorMotionInvalidMotion() {
-        assertThrows(LegoTruckException.class, () -> {
-            inputValidator.checkValidMotorMotion("fail");
-        });
+    public void checkValidMotorMotionInvalidMotion() {
+        String motionString = "fake";
+        thrown.expect(new LegoTruckExceptionMatcher(Errors.INVALID_PARAMETER, "motion has to be either linear or angular"));
+        inputValidator.checkValidMotorMotion(motionString);
     }
 
     @Test
-    void checkValidMotorPowerSuccess() {
+    public void checkValidMotorPowerSuccessSuccess() {
         inputValidator.checkValidMotorPower(5);
     }
 
     @Test
-    void checkValidMotorPowerInvalidPower() {
-        assertThrows(LegoTruckException.class, () -> {
-            inputValidator.checkValidMotorPower(1000);
-        });
+    public void checkValidMotorPowerInvalidPower() {
+        int invalidPower = 1000;
+        thrown.expect(new LegoTruckExceptionMatcher(Errors.INVALID_PARAMETER, "power has to be smaller than 100"));
+        inputValidator.checkValidMotorPower(invalidPower);
     }
 
 }

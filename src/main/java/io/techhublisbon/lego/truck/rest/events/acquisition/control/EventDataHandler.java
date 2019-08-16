@@ -46,11 +46,10 @@ public class EventDataHandler {
     public void setupDataHandler() {
         try {
             myMqttHandler.subscribe("truck1/#");
+            myMqttHandler.setCallback(new MqttDataCallback(componentInfo, databaseHandler));
         } catch (MqttException e) {
             MqttHandler.handleGracefully(e);
         }
-        // The SBrick does not send its information so we need to add it manually
-        myMqttHandler.setCallback(new MqttDataCallback(componentInfo, databaseHandler));
     }
 
     /**
