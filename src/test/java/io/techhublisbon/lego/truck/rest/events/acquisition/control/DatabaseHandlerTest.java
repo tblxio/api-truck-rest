@@ -323,7 +323,7 @@ public class DatabaseHandlerTest {
         Component component = Component.MOTOR;
         GyroscopeEvent expectedResponse = new GyroscopeEvent(System.currentTimeMillis(), 1.2d, 1.3d, 1.4d);
         //then
-        thrown.expect(new LegoTruckExceptionMatcher(Errors.RESOURCE_NOT_FOUND, component, "last"));
+        thrown.expect(new LegoTruckExceptionMatcher(Errors.RESOURCE_NOT_FOUND, component, "mean"));
         //when
         XYZSensorEvent response = classUnderTest.getXYZSensorMeanEventInLastInterval(interval, component);
 

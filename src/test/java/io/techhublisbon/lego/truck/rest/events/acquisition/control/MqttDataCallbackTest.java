@@ -13,6 +13,7 @@ import org.mockito.Mock;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -45,7 +46,7 @@ public class MqttDataCallbackTest {
         //when
         mqttDataCallbackUnderTest.messageArrived(topic, testMqttMessage);
         //then
-        verify(mqttDataCallbackUnderTest).handleImuMessage(testMqttMessage);
+        verify(databaseHandler).saveXYZSensorEvent(any(), any());
     }
 
     @Test
@@ -69,7 +70,7 @@ public class MqttDataCallbackTest {
         //when
         mqttDataCallbackUnderTest.messageArrived(topic, testMqttMessage);
         //then
-        verify(mqttDataCallbackUnderTest).handleMotorMessage(testMqttMessage);
+        verify(databaseHandler).saveMotorControllerEvent(any());
     }
 
     @Test
@@ -94,7 +95,7 @@ public class MqttDataCallbackTest {
         //when
         mqttDataCallbackUnderTest.messageArrived(topic, testMqttMessage);
         //then
-        verify(mqttDataCallbackUnderTest).handleProximityMessage(testMqttMessage);
+        verify(databaseHandler).saveProximitySensorEvent(any());
     }
 
     @Test
@@ -119,7 +120,7 @@ public class MqttDataCallbackTest {
         //when
         mqttDataCallbackUnderTest.messageArrived(topic, testMqttMessage);
         //then
-        verify(mqttDataCallbackUnderTest).handleComponentsMessage(testMqttMessage);
+        verify(componentInfoCollection).getComponentInfos();
     }
 
 
@@ -144,7 +145,7 @@ public class MqttDataCallbackTest {
         //when
         mqttDataCallbackUnderTest.messageArrived(topic, testMqttMessage);
         //then
-        verify(mqttDataCallbackUnderTest).handleCameraMessage(testMqttMessage);
+        verify(componentInfoCollection).setVideoStream(any());
     }
 
     @Test
